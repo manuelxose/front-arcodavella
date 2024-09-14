@@ -1,0 +1,32 @@
+<div class="flex h-screen w-screen">
+  <!-- Sección izquierda con imagen y texto promocional -->
+  <div class="auth-bg hidden flex-1 items-center justify-center bg-primary bg-cover lg:flex">
+    <div class="max-w-2xl space-y-4 p-8 text-center text-white">
+      <img src="./assets/icons/logo-arcodavella.png" alt="Imagen de panel de control" />
+      <h1 class="text-4xl font-bold">"Rápido, Eficiente y Productivo"</h1>
+      <p class="text-xs font-light">
+        Bienvenido a la sección de socios de <b>Arco da Vella</b>, donde la colaboración y el compromiso se unen para
+        crear un entorno más inclusivo y solidario. Únete a nuestras iniciativas y descubre cómo puedes contribuir a
+        nuestra causa. Haz clic en
+        <span class="cursor-pointer font-medium text-yellow-400">nuestras actividades</span> para conocer más sobre
+        nuestras metas y proyectos.
+      </p>
+    </div>
+  </div>
+
+  <!-- Sección derecha con el formulario de login -->
+  <div class="flex flex-1 items-center justify-center bg-background">
+    <div class="max-w-md overflow-y-auto px-4 sm:w-[500px]">
+      <!-- logo -->
+      <div class="flex items-center justify-center">
+        <a class="rounded bg-primary p-2">
+          <svg-icon src="assets/icons/logo-arcodavella.png" [svgClass]="'h-5 w-5'"> </svg-icon>
+        </a>
+        <b class="text-md pl-3 font-bold text-foreground">Arco da Vella</b>
+      </div>
+
+      <!-- Contenido de la ruta (Formulario de Inicio de Sesión) -->
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

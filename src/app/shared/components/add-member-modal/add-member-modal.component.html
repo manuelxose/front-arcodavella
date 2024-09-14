@@ -1,0 +1,108 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" [ngClass]="{ hidden: !isVisible }">
+  <div class="w-full max-w-lg transform rounded-2xl bg-white p-6 shadow-xl transition-all duration-300 ease-in-out">
+    <div class="modal-header flex items-center justify-between pb-4">
+      <h5 class="text-2xl font-semibold text-gray-900">Add New Member</h5>
+      <button type="button" class="text-gray-400 focus:outline-none hover:text-gray-600" (click)="close()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="newMember.name"
+          name="name"
+          class="mt-1 block w-full rounded-lg border px-4 py-2 text-sm shadow-sm"
+          [ngClass]="{ 'border-red-500': validationErrors.name }"
+          placeholder="Enter member's name" />
+        <p *ngIf="validationErrors.name" class="mt-1 text-sm text-red-500">Name is required.</p>
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="newMember.email"
+          name="email"
+          class="mt-1 block w-full rounded-lg border px-4 py-2 text-sm shadow-sm"
+          [ngClass]="{ 'border-red-500': validationErrors.email }"
+          placeholder="Enter member's email" />
+        <p *ngIf="validationErrors.email" class="mt-1 text-sm text-red-500">Please enter a valid email.</p>
+      </div>
+
+      <div>
+        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+        <select
+          id="role"
+          [(ngModel)]="newMember.role"
+          name="role"
+          class="mt-1 block w-full rounded-lg border px-4 py-2 text-sm shadow-sm"
+          [ngClass]="{ 'border-red-500': validationErrors.role }">
+          <option value="" disabled>Select a role</option>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select>
+        <p *ngIf="validationErrors.role" class="mt-1 text-sm text-red-500">Role is required.</p>
+      </div>
+
+      <div>
+        <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+        <input
+          id="dni"
+          type="text"
+          [(ngModel)]="newMember.dni"
+          name="dni"
+          class="mt-1 block w-full rounded-lg border px-4 py-2 text-sm shadow-sm"
+          [ngClass]="{ 'border-red-500': validationErrors.dni }"
+          placeholder="Enter member's DNI" />
+        <p *ngIf="validationErrors.dni" class="mt-1 text-sm text-red-500">DNI is required.</p>
+      </div>
+
+      <div>
+        <label for="memberNumber" class="block text-sm font-medium text-gray-700">Member Number</label>
+        <input
+          id="memberNumber"
+          type="text"
+          [(ngModel)]="newMember.memberNumber"
+          name="memberNumber"
+          class="mt-1 block w-full rounded-lg border px-4 py-2 text-sm shadow-sm"
+          [ngClass]="{ 'border-red-500': validationErrors.memberNumber }"
+          placeholder="Enter member's number" />
+        <p *ngIf="validationErrors.memberNumber" class="mt-1 text-sm text-red-500">Member number is required.</p>
+      </div>
+
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+        <select
+          id="status"
+          [(ngModel)]="newMember.status"
+          name="status"
+          class="mt-1 block w-full rounded-lg border px-4 py-2 text-sm shadow-sm">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer mt-6 flex justify-end gap-2">
+      <button
+        type="button"
+        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 hover:bg-gray-100"
+        (click)="close()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:bg-blue-700"
+        (click)="onConfirmAdd()">
+        Add Member
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<ng-container>
+  <th class="w-[50px]">
+    <input (change)="toggle($event)" class="checkbox checkbox-sm" data-datatable-check="true" type="checkbox" />
+  </th>
+  <th class="min-w-[300px]" (click)="sort('name')">Socio</th>
+  <th class="min-w-[180px]" (click)="sort('username')">DNI</th>
+  <th class="min-w-[180px]" (click)="sort('hobbies')">Num Socio</th>
+  <th class="min-w-[180px]" (click)="sort('occupation')">Estado</th>
+  <th class="min-w-[150px]" (click)="sort('phone')">Observaciones</th>
+  <th class="w-[60px]"></th>
+</ng-container>

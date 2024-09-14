@@ -1,0 +1,145 @@
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="my-10 space-y-6">
+  <div class="text-center">
+    <h2 class="mb-1 text-3xl font-semibold text-foreground">Regístrate <span class="text-primary">!</span></h2>
+    <p class="text-sm text-muted-foreground">Comienza tu viaje con nosotros como socio de Arco da Vella.</p>
+  </div>
+
+  <div routerLink="/dashboard">
+    <app-button full impact="bold" tone="light" shape="rounded" size="medium">
+      <svg-icon src="assets/icons/google-logo.svg" [svgClass]="'h-6 w-6 mr-2'"></svg-icon>
+      Regístrate con Google
+    </app-button>
+  </div>
+
+  <div
+    class="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-muted after:mt-0.5 after:flex-1 after:border-t after:border-muted">
+    <p class="mx-4 mb-0 text-center text-sm text-muted-foreground">o</p>
+  </div>
+
+  <div class="space-y-3 text-left">
+    <div class="relative" [ngClass]="{ 'has-error': submitted && f['email'].errors }">
+      <input type="text" id="email" formControlName="email" class="peer block" placeholder=" " />
+      <label
+        for="email"
+        class="absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+        Dirección de correo electrónico
+      </label>
+      <div *ngIf="submitted && f['email'].errors" class="text-sm text-red-500">
+        <div *ngIf="f['email'].errors['required']">El correo electrónico es obligatorio.</div>
+        <div *ngIf="f['email'].errors['email']">El formato del correo electrónico no es válido.</div>
+      </div>
+    </div>
+
+    <div class="relative" [ngClass]="{ 'has-error': submitted && f['password'].errors }">
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        id="password"
+        formControlName="password"
+        class="peer block"
+        (input)="onPasswordInput()"
+        placeholder=" " />
+      <label
+        for="password"
+        class="absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+        Contraseña
+      </label>
+
+      <!-- Toggle visibility icon -->
+      <span class="absolute right-5 top-2.5 cursor-pointer text-muted-foreground" (click)="togglePasswordVisibility()">
+        <svg-icon
+          src="assets/icons/heroicons/outline/eye-off.svg"
+          [svgClass]="'h-5 w-5'"
+          *ngIf="!showPassword"></svg-icon>
+        <svg-icon src="assets/icons/heroicons/outline/eye.svg" [svgClass]="'h-5 w-5'" *ngIf="showPassword"></svg-icon>
+      </span>
+
+      <div *ngIf="submitted && f['password'].errors" class="text-sm text-red-500">
+        <div *ngIf="f['password'].errors['required']">La contraseña es obligatoria.</div>
+        <div *ngIf="f['password'].errors['minlength']">La contraseña debe tener al menos 8 caracteres.</div>
+      </div>
+    </div>
+
+    <!-- Visualización de la seguridad de la contraseña -->
+    <div class="grid grid-cols-4 gap-2">
+      <div
+        class="h-1 rounded-sm"
+        [ngClass]="{
+          'bg-red-500': passwordStrength === 1,
+          'bg-yellow-500': passwordStrength === 2,
+          'bg-green-500': passwordStrength >= 3,
+          'bg-muted': passwordStrength === 0
+        }"></div>
+      <div
+        class="h-1 rounded-sm"
+        [ngClass]="{
+          'bg-yellow-500': passwordStrength === 2,
+          'bg-green-500': passwordStrength >= 3,
+          'bg-muted': passwordStrength < 2
+        }"></div>
+      <div
+        class="h-1 rounded-sm"
+        [ngClass]="{ 'bg-green-500': passwordStrength >= 3, 'bg-muted': passwordStrength < 3 }"></div>
+      <div
+        class="h-1 rounded-sm"
+        [ngClass]="{ 'bg-green-500': passwordStrength === 4, 'bg-muted': passwordStrength < 4 }"></div>
+    </div>
+    <span class="text-xs text-muted-foreground"
+      >Usa 8 o más caracteres con una mezcla de letras, números y símbolos.</span
+    >
+
+    <div class="relative" [ngClass]="{ 'has-error': submitted && f['confirmPassword'].errors }">
+      <input
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        id="confirm-password"
+        formControlName="confirmPassword"
+        class="peer block"
+        placeholder=" " />
+      <label
+        for="confirm-password"
+        class="absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary">
+        Confirmar contraseña
+      </label>
+
+      <!-- Toggle visibility icon -->
+      <span
+        class="absolute right-5 top-2.5 cursor-pointer text-muted-foreground"
+        (click)="toggleConfirmPasswordVisibility()">
+        <svg-icon
+          src="assets/icons/heroicons/outline/eye-off.svg"
+          [svgClass]="'h-5 w-5'"
+          *ngIf="!showConfirmPassword"></svg-icon>
+        <svg-icon
+          src="assets/icons/heroicons/outline/eye.svg"
+          [svgClass]="'h-5 w-5'"
+          *ngIf="showConfirmPassword"></svg-icon>
+      </span>
+
+      <div *ngIf="submitted && f['confirmPassword'].errors" class="text-sm text-red-500">
+        <div *ngIf="f['confirmPassword'].errors['required']">Confirmar la contraseña es obligatorio.</div>
+        <div *ngIf="f['confirmPassword'].errors['mustMatch']">Las contraseñas no coinciden.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between space-x-3">
+    <div class="flex items-center gap-1">
+      <input id="accept-term" name="accept-term" type="checkbox" formControlName="acceptTerms" />
+      <label for="accept-term" class="ml-2 block text-sm text-muted-foreground"> Acepto los </label>
+      <app-button impact="none" tone="primary" shape="rounded" size="small"> Términos </app-button>
+    </div>
+    <div *ngIf="submitted && f['acceptTerms'].errors" class="text-sm text-red-500">
+      Debes aceptar los términos y condiciones.
+    </div>
+  </div>
+
+  <div>
+    <app-button type="submit" full impact="bold" tone="primary" shape="rounded" size="medium">Regístrate</app-button>
+  </div>
+
+  <div class="flex items-center text-sm text-muted-foreground">
+    ¿Ya tienes una cuenta?
+    <app-button routerLink="/auth/sign-in" impact="none" tone="primary" shape="rounded" size="small">
+      Inicia sesión
+    </app-button>
+  </div>
+</form>

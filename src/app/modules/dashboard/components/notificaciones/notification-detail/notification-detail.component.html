@@ -1,0 +1,31 @@
+<div class="rounded-lg bg-white p-6 shadow-lg transition-all duration-300 ease-in-out">
+  <h2 class="font-sans text-3xl font-bold text-gray-900">{{ notification.title }}</h2>
+  <p class="font-sans mt-2 text-sm text-gray-500">
+    Recibida: {{ notification.updatedAt | date : 'yyyy/MM/dd HH:mm:ss' }}
+  </p>
+
+  <div class="mt-6">
+    <p class="text-lg font-light leading-relaxed text-gray-700">{{ notification.message }}</p>
+  </div>
+
+  <div class="mt-6 flex space-x-4">
+    <button
+      class="rounded-full bg-blue-500 px-8 py-3 text-base font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400 hover:bg-blue-600"
+      (click)="onClose()">
+      Cerrar Detalles
+    </button>
+
+    <button
+      *ngIf="notification.status === 'read'"
+      class="rounded-full bg-yellow-500 px-8 py-3 text-base font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-yellow-400 hover:bg-yellow-600"
+      (click)="onMarkAsUnread()">
+      Marcar como No Leído
+    </button>
+    <button
+      *ngIf="isUserRequest() && notification.status !== 'approved'"
+      class="rounded-full bg-green-500 px-8 py-3 text-base font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-400 hover:bg-green-600"
+      (click)="onAcceptRequest()">
+      Aceptar Solicitud
+    </button>
+  </div>
+</div>

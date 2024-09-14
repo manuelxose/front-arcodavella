@@ -1,0 +1,18 @@
+<table class="min-w-full rounded-md bg-white shadow">
+  <thead>
+    <tr>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Usuario</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Correo Electrónico</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha de Registro</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let approval of newUserApprovals" class="border-t">
+      <td class="py-2 px-4 text-sm text-gray-700">{{ approval.username }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ approval.email }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ approval.date | date: 'short' }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ approval.status }}</td>
+    </tr>
+  </tbody>
+</table>

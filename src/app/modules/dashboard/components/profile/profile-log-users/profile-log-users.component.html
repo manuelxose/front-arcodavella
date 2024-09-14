@@ -1,0 +1,23 @@
+<table class="min-w-full rounded-md bg-white shadow">
+  <thead>
+    <tr>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Usuario</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha de Login</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Estado</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">IP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Directiva *ngFor para iterar sobre los registros de login de usuarios -->
+    <tr *ngFor="let login of userLogins" class="border-t">
+      <td class="py-2 px-4 text-sm text-gray-700">{{ login.username }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ login.date | date: 'short' }}</td>
+      <td class="py-2 px-4 text-sm">
+        <span [ngClass]="login.status === 'Success' ? 'text-green-600' : 'text-red-600'">
+          {{ login.status }}
+        </span>
+      </td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ login.ip }}</td>
+    </tr>
+  </tbody>
+</table>

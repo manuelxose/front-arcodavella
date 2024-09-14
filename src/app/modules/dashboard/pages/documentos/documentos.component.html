@@ -1,0 +1,67 @@
+<div class="min-h-screen bg-gray-50 p-8">
+  <!-- Título de la página -->
+  <div class="mb-8 text-center">
+    <h1 class="text-4xl font-bold text-gray-900">Descarga de Documentos</h1>
+    <p class="mt-2 text-lg text-gray-600">
+      Aquí puedes descargar todos los documentos que están disponibles. Usa los filtros para encontrar los archivos más
+      rápidamente.
+    </p>
+  </div>
+
+  <!-- Filtros de búsqueda -->
+  <div class="mb-8 flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+    <div class="w-full md:w-1/3">
+      <label for="search" class="block text-sm font-medium text-gray-700">Buscar por nombre</label>
+      <input
+        type="text"
+        id="search"
+        [(ngModel)]="searchTerm"
+        placeholder="Buscar documentos..."
+        class="mt-1 w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    </div>
+    <div class="w-full md:w-1/3">
+      <label for="category" class="block text-sm font-medium text-gray-700">Filtrar por categoría</label>
+      <select
+        id="category"
+        [(ngModel)]="selectedCategory"
+        class="mt-1 w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <option value="all">Todas las categorías</option>
+        <option value="finanzas">Finanzas</option>
+        <option value="recursos_humanos">Recursos Humanos</option>
+        <option value="legal">Legal</option>
+        <option value="tecnologia">Tecnología</option>
+      </select>
+    </div>
+    <div class="w-full md:w-1/3">
+      <label for="date" class="block text-sm font-medium text-gray-700">Ordenar por fecha</label>
+      <select
+        id="date"
+        [(ngModel)]="sortByDate"
+        class="mt-1 w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <option value="latest">Más reciente</option>
+        <option value="oldest">Más antiguo</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Listado de documentos -->
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div *ngFor="let document of filteredDocuments()" class="rounded-lg bg-white p-6 shadow-lg">
+      <div class="flex items-center space-x-4">
+        <img [src]="document.icon" alt="{{ document.name }} Icon" class="h-12 w-12" />
+        <div>
+          <h3 class="text-xl font-semibold text-gray-900">{{ document.name }}</h3>
+          <p class="text-sm text-gray-500">Categoría: {{ document.category }}</p>
+          <p class="text-sm text-gray-500">Subido: {{ document.uploadedDate }}</p>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center justify-between">
+        <span class="text-sm text-gray-500">Tamaño: {{ document.size }}</span>
+        <button
+          class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
+          Descargar {{ document.extension }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
