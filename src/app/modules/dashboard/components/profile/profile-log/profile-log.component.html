@@ -1,0 +1,19 @@
+<table class="min-w-full rounded-md bg-white shadow">
+  <thead>
+    <tr>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Acción</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Usuario Afectado</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Fecha</th>
+      <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Detalles</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Directiva *ngFor para iterar sobre las acciones del administrador -->
+    <tr *ngFor="let action of adminActions" class="border-t">
+      <td class="py-2 px-4 text-sm text-gray-700">{{ action.actionType }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ action.affectedUser }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ action.date | date: 'short' }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700">{{ action.details }}</td>
+    </tr>
+  </tbody>
+</table>

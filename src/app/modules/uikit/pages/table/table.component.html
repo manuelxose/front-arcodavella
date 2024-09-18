@@ -1,0 +1,69 @@
+<div class="mb-4 flex justify-between">
+  <div class="inline-block">
+    <h3 class="font-semibold text-foreground">Socios Cooperativa</h3>
+    <div class="space-x-1 text-xs font-medium text-muted-foreground">
+      <a href="" class="hover:text-primary">Número de Socios:</a>
+      <span class="text-foreground">{{ totalUsers }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <button
+      (click)="modal.open()"
+      class="flex-none rounded-md bg-muted px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:text-foreground">
+      Importar CSV
+    </button>
+    <button
+      class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
+      (click)="addMemberModal.open()">
+      Añadir Socio
+    </button>
+    <button
+      (click)="deleteSelectedUsers()"
+      class="flex-none rounded-md bg-red-600 px-4 py-2.5 text-xs font-semibold text-primary-foreground">
+      Borrar Socio
+    </button>
+  </div>
+</div>
+
+<div class="flex min-w-full flex-col rounded-xl border border-muted/20 bg-background p-2">
+  <app-table-action
+    [totalUsers]="totalUsers"
+    [displayedUsers]="displayedUsers"
+    (onSearch)="onSearch($event)"
+    (onFilter)="onFilter($event)"></app-table-action>
+  <div class="overflow-x-auto">
+    <table
+      class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
+      <thead class="border border-muted/20 text-xs text-muted-foreground">
+        <tr app-table-header (onCheck)="toggleUsers($event)"></tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track $index) {
+        <tr class="hover:bg-card/50" app-table-row [user]="user" (selectionChange)="onUserSelectionChange($event)">
+          >
+        </tr>
+        } @empty {
+        <tr>
+          <td class="py-4 text-center text-sm" colspan="7">No users found</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-table-footer
+    [totalUsers]="totalUsers"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    (onPageChange)="onPageChange($event)"
+    (onPageSizeChange)="onPageSizeChange($event)"
+    >></app-table-footer
+  >
+</div>
+<app-upload-csv-modal #modal></app-upload-csv-modal>
+<app-delete-confirmation-modal
+  #deleteModal
+  [selectedUsers]="selectedUsers"
+  (confirmDelete)="confirmDelete()"
+  class="delete-modal">
+</app-delete-confirmation-modal>
+<app-add-member-modal #addMemberModal (addMember)="handleAddMember($event)"></app-add-member-modal>

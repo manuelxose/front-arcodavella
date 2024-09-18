@@ -1,0 +1,75 @@
+<div class="rounded-xl bg-gray-50 p-8 shadow-lg">
+  <h1 class="mb-6 text-3xl font-bold text-gray-900">Panel de Administración</h1>
+
+  <!-- Tarjeta de Perfil -->
+  <div class="mb-8">
+    <app-user-profile
+      [user]="{
+        avatar: 'assets/images/user-avatar.png',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        roles: ['Admin', 'User'],
+        verified: true
+      }"
+      (edit)="onEditUser()"
+      (delete)="onDeleteUser()">
+    </app-user-profile>
+  </div>
+
+  <!-- Pestañas -->
+  <div class="mb-8 flex border-b border-gray-200">
+    <button
+      (click)="activeTab = 'adminActions'"
+      [ngClass]="{
+        'border-blue-500 text-blue-500': activeTab === 'adminActions',
+        'text-gray-500 hover:text-gray-700': activeTab !== 'adminActions'
+      }"
+      class="border-b-2 py-2 px-4 text-sm font-semibold transition-colors duration-300 focus:outline-none">
+      Acciones del Administrador
+    </button>
+    <button
+      (click)="activeTab = 'userLogins'"
+      [ngClass]="{
+        'border-blue-500 text-blue-500': activeTab === 'userLogins',
+        'text-gray-500 hover:text-gray-700': activeTab !== 'userLogins'
+      }"
+      class="border-b-2 py-2 px-4 text-sm font-semibold transition-colors duration-300 focus:outline-none">
+      Registro de Logins de Usuarios
+    </button>
+    <button
+      (click)="activeTab = 'dataChangeRequests'"
+      [ngClass]="{
+        'border-blue-500 text-blue-500': activeTab === 'dataChangeRequests',
+        'text-gray-500 hover:text-gray-700': activeTab !== 'dataChangeRequests'
+      }"
+      class="border-b-2 py-2 px-4 text-sm font-semibold transition-colors duration-300 focus:outline-none">
+      Peticiones de Cambio de Datos
+    </button>
+    <button
+      (click)="activeTab = 'newUserApprovals'"
+      [ngClass]="{
+        'border-blue-500 text-blue-500': activeTab === 'newUserApprovals',
+        'text-gray-500 hover:text-gray-700': activeTab !== 'newUserApprovals'
+      }"
+      class="border-b-2 py-2 px-4 text-sm font-semibold transition-colors duration-300 focus:outline-none">
+      Aceptaciones de Nuevos Usuarios
+    </button>
+  </div>
+
+  <!-- Contenido de las pestañas -->
+  <div *ngIf="activeTab === 'adminActions'" class="mt-6">
+    <app-profile-log [adminActions]="adminActions"></app-profile-log>
+  </div>
+
+  <div *ngIf="activeTab === 'userLogins'" class="mt-6">
+    <app-profile-log-users [userLogins]="userLogins"></app-profile-log-users>
+  </div>
+
+  <div *ngIf="activeTab === 'dataChangeRequests'" class="mt-6">
+    <app-data-change-request [dataChangeRequests]="dataChangeRequests"></app-data-change-request>
+  </div>
+
+  <div *ngIf="activeTab === 'newUserApprovals'" class="mt-6">
+    <app-new-user-approvals [newUserApprovals]="newUserApprovals"></app-new-user-approvals>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+  <!-- Muestra cuántos usuarios se están mostrando de un total -->
+  <h3 class="text-sm font-medium text-muted-foreground">Showing {{ displayedUsers }} of {{ totalUsers }} users</h3>
+
+  <div class="flex flex-wrap gap-2">
+    <div class="flex">
+      <label class="relative text-muted-foreground">
+        <div class="absolute left-2.5 top-2.5">
+          <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </div>
+        <input class="py-2 pl-8 pr-2" placeholder="Search users" type="text" (input)="search($event)" />
+      </label>
+    </div>
+    <div class="flex flex-wrap gap-2.5">
+      <!-- Filtro por estado -->
+      <select class="w-28 p-2 text-muted-foreground" (change)="onFilterChange($event, 'status')">
+        <option value="">Estado</option>
+        <option value="active">Active</option>
+        <option value="disabled">Disabled</option>
+        <option value="pending">Pending</option>
+      </select>
+
+      <!-- Ordenación por memberNumber -->
+      <select class="w-28 p-2 text-muted-foreground" (change)="onFilterChange($event, 'sort')">
+        <option value="asc">Ascendiente</option>
+        <option value="desc">Descendiente</option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<!-- Modal -->
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" [ngClass]="{ hidden: !isVisible }">
+  <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl transition-all duration-300 ease-in-out">
+    <div class="modal-header flex items-center justify-between border-b pb-4">
+      <h5 class="text-2xl font-semibold text-gray-900">Subir Archivo CSV o Excel</h5>
+      <button type="button" class="text-gray-400 focus:outline-none hover:text-gray-600" (click)="close()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body py-6">
+      <!-- Instrucciones de formato del nombre del archivo -->
+      <p class="mb-4 text-sm text-gray-700">
+        El archivo debe seguir el formato: <br />
+        - Para archivos de socios: <code>lista_socios-YYYY-MM-DD.csv</code> o <code>.xlsx</code> <br />
+        - Para archivos de asistencia: <code>lista_asistencia-YYYY-MM-DD.csv</code> o <code>.xlsx</code>
+      </p>
+
+      <!-- Input para subir archivo con validación -->
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        accept=".csv,.xls,.xlsx,.xlsm"
+        [ngClass]="{ 'border-red-500': csvFile && !isValidFileName }"
+        class="w-full rounded-lg border p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <!-- Mensajes de error con estilo mejorado -->
+      <div *ngIf="csvFile && !isValidFileName" class="mt-2 text-sm text-red-500">
+        <p *ngIf="fileNameError === 'invalid_format'">
+          El nombre del archivo es inválido. Debe comenzar con "lista_socios-" o "lista_asistencia-", seguido de la
+          fecha en formato "YYYY-MM-DD".
+        </p>
+        <p *ngIf="fileNameError === 'missing_date'">
+          Falta la fecha en el nombre del archivo. Asegúrate de incluir una fecha en el formato "YYYY-MM-DD".
+        </p>
+        <p *ngIf="fileNameError === 'invalid_extension'">
+          El archivo debe tener una extensión válida (.csv, .xls, o .xlsx).
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-footer flex justify-end gap-4 border-t pt-4">
+      <button
+        type="button"
+        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-md focus:outline-none hover:bg-gray-100"
+        (click)="close()">
+        Cerrar
+      </button>
+      <button
+        type="button"
+        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md focus:outline-none hover:bg-blue-700"
+        [disabled]="!isValidFileName || !csvFile"
+        (click)="onUpload()">
+        Subir
+      </button>
+    </div>
+  </div>
+</div>

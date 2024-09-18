@@ -1,0 +1,241 @@
+<div class="container mx-auto p-6">
+  <!-- Banner con imagen de fondo a la izquierda -->
+  <div
+    class="relative h-64 overflow-hidden rounded-xl bg-cover bg-center shadow-2xl"
+    style="background-image: url('../../../../../assets/bg/arcodavella-banner-navia.jpg')">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="absolute inset-0 flex items-center justify-start p-8">
+      <div class="text-left">
+        <h1 class="text-5xl font-extrabold text-white drop-shadow-2xl">Perfil de Cooperativista</h1>
+        <p class="mt-4 text-2xl font-light text-gray-200">Arco da Vella Sociedade Cooperativa Galega</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal -->
+  <div class="mx-auto mt-8 rounded-2xl bg-white p-6 shadow-lg">
+    <!-- Encabezado con Nombre y Número de Socio -->
+    <div class="mb-6 rounded-2xl bg-gradient-to-r from-blue-50 via-white to-blue-50 p-8 shadow-lg">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-gray-800">Bienvenido, {{ member.name || 'Socio' }}!</h2>
+        <p class="mt-2 text-gray-600">Aquí puedes ver y editar tu información personal</p>
+      </div>
+      <div class="mt-6 text-center">
+        <span class="block text-lg font-medium text-gray-500">Número de Socio:</span>
+        <span class="block text-5xl font-extrabold text-blue-600">{{ member.memberNumber || 'Pendiente' }}</span>
+      </div>
+    </div>
+
+    <!-- Descripción de la sección de Contacto -->
+    <h3 class="mb-4 text-2xl font-bold text-gray-900">Información de Contacto</h3>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <!-- Contacto (Email) -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <label class="block text-sm text-gray-500">Email</label>
+            <span *ngIf="!isEditing['email']" class="text-xl text-gray-900">{{ member.email }}</span>
+            <input
+              *ngIf="isEditing['email']"
+              [(ngModel)]="member.email"
+              class="mt-2 w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <!-- Botón para editar -->
+          <button
+            *ngIf="!isEditing['email']"
+            (click)="editField('email')"
+            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
+            Editar
+          </button>
+
+          <!-- Botón para enviar cambios -->
+          <button
+            *ngIf="isEditing['email']"
+            (click)="sendUpdate('email')"
+            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
+            Enviar
+          </button>
+
+          <!-- Botón para cancelar la edición -->
+          <button
+            *ngIf="isEditing['email']"
+            (click)="cancelEdit('email')"
+            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
+            Cancelar
+          </button>
+        </div>
+        <div *ngIf="isPendingApproval['email']" class="mt-2 text-sm text-orange-500">
+          Tu actualización de email está pendiente de aprobación.
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <label class="block text-sm text-gray-500">Teléfono</label>
+            <span *ngIf="!isEditing['phone']" class="text-xl text-gray-900">{{
+              member.phone || 'Añadir Teléfono'
+            }}</span>
+            <input
+              *ngIf="isEditing['phone']"
+              [(ngModel)]="member.phone"
+              class="mt-2 w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <button
+            *ngIf="!isEditing['phone']"
+            (click)="editField('phone')"
+            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
+            Editar
+          </button>
+          <button
+            *ngIf="isEditing['phone']"
+            (click)="sendUpdate('phone')"
+            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
+            Enviar
+          </button>
+          <button
+            *ngIf="isEditing['phone']"
+            (click)="cancelEdit('phone')"
+            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
+            Cancelar
+          </button>
+        </div>
+        <div *ngIf="isPendingApproval['phone']" class="mt-2 text-sm text-orange-500">
+          Tu actualización de teléfono está pendiente de aprobación.
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <label class="block text-sm text-gray-500">Dirección</label>
+            <span *ngIf="!isEditing['address']" class="text-xl text-gray-900">{{
+              member.address || 'Añadir dirección'
+            }}</span>
+            <input
+              *ngIf="isEditing['address']"
+              [(ngModel)]="member.address"
+              class="mt-2 w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <button
+            *ngIf="!isEditing['address']"
+            (click)="editField('address')"
+            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
+            Editar
+          </button>
+          <button
+            *ngIf="isEditing['address']"
+            (click)="sendUpdate('address')"
+            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
+            Enviar
+          </button>
+          <button
+            *ngIf="isEditing['address']"
+            (click)="cancelEdit('address')"
+            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
+            Cancelar
+          </button>
+        </div>
+        <div *ngIf="isPendingApproval['address']" class="mt-2 text-sm text-orange-500">
+          Tu actualización de dirección está pendiente de aprobación.
+        </div>
+      </div>
+
+      <!-- Número de Cuenta con desenfoque y edición -->
+      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <label class="block text-sm text-gray-500">Número de Cuenta</label>
+            <div class="mt-2">
+              <!-- Mostrar el número de cuenta o el input para editar -->
+              <span *ngIf="!isEditing['accountNumber'] && showAccountNumber" class="text-xl text-gray-900">{{
+                member.accountNumber
+              }}</span>
+              <span *ngIf="!isEditing['accountNumber'] && !showAccountNumber" class="text-xl text-gray-900 blur-sm"
+                >**** **** ****</span
+              >
+
+              <input
+                *ngIf="isEditing['accountNumber']"
+                [(ngModel)]="member.accountNumber"
+                class="w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+          </div>
+          <!-- Botón para mostrar/ocultar el número de cuenta -->
+          <button class="ml-3 text-sm font-semibold text-blue-500 hover:underline" (click)="toggleAccountNumber()">
+            {{ showAccountNumber ? 'Ocultar' : 'Mostrar' }}
+          </button>
+
+          <!-- Botón para editar el número de cuenta -->
+          <button
+            *ngIf="!isEditing['accountNumber']"
+            (click)="editField('accountNumber')"
+            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
+            Editar
+          </button>
+
+          <!-- Botón para enviar cambios -->
+          <button
+            *ngIf="isEditing['accountNumber']"
+            (click)="sendUpdate('accountNumber')"
+            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
+            Enviar
+          </button>
+
+          <!-- Botón para cancelar la edición -->
+          <button
+            *ngIf="isEditing['accountNumber']"
+            (click)="cancelEdit('accountNumber')"
+            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
+            Cancelar
+          </button>
+        </div>
+
+        <!-- Mensaje de aprobación pendiente -->
+        <div *ngIf="isPendingApproval['accountNumber']" class="mt-2 text-sm text-orange-500">
+          Tu actualización de cuenta está pendiente de aprobación.
+        </div>
+      </div>
+      <!-- Bloque de Información Financiera -->
+      <div class="mt-8 rounded-2xl bg-white">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <h3 class="text-2xl font-bold text-gray-900">Historial Financiero</h3>
+          </div>
+        </div>
+
+        <!-- Lista de Facturas -->
+        <div class="mt-6 space-y-4">
+          <!-- Factura 1 -->
+          <div
+            class="flex flex-col items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-6 shadow-sm md:flex-row">
+            <div class="mb-4 md:mb-0">
+              <h4 class="text-lg font-semibold text-gray-900">Factura #1234</h4>
+              <span class="block text-sm text-gray-500">Fecha: 15/08/2023</span>
+            </div>
+            <button
+              class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
+              Descargar PDF
+            </button>
+          </div>
+
+          <!-- Factura 2 -->
+          <div
+            class="flex flex-col items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-6 shadow-sm md:flex-row">
+            <div class="mb-4 md:mb-0">
+              <h4 class="text-lg font-semibold text-gray-900">Factura #1235</h4>
+              <span class="block text-sm text-gray-500">Fecha: 15/09/2023</span>
+            </div>
+            <button
+              class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
+              Descargar PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
