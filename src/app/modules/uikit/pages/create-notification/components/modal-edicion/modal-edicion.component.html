@@ -1,0 +1,153 @@
+<!-- src/app/modal-edicion/modal-edicion.component.html -->
+
+<div class="w-full max-w-6xl rounded-2xl bg-white p-8 shadow-2xl">
+  <!-- Título del Modal -->
+  <h2 mat-dialog-title class="mb-6 text-center text-2xl font-semibold text-gray-800">Editar Miembros de la Lista</h2>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content>
+    <!-- Buscador con Icono de Lupa -->
+    <div class="relative mb-6">
+      <input
+        type="text"
+        placeholder="Buscar por nombre o correo"
+        [(ngModel)]="searchTerm"
+        (input)="applyFilter()"
+        class="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 text-base focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M12.9 14.32a8 8 0 111.414-1.414l4.386 4.385a1 1 0 01-1.414 1.415l-4.385-4.386zM8 14a6 6 0 100-12 6 6 0 000 12z"
+            clip-rule="evenodd" />
+        </svg>
+      </span>
+    </div>
+
+    <!-- Botones de Borrado -->
+    <div class="mb-4 flex justify-end space-x-4">
+      <button
+        mat-button
+        color="warn"
+        (click)="eliminarTodos()"
+        [disabled]="!filteredData.length"
+        class="flex items-center rounded-md bg-red-600 px-4 py-2 text-white transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-700">
+        <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            d="M9 2a1 1 0 00-1 1v1H5.5A1.5 1.5 0 004 5.5V7h12V5.5A1.5 1.5 0 0014.5 4H11V3a1 1 0 00-1-1H9zM4 8v8.5A1.5 1.5 0 005.5 18h9A1.5 1.5 0 0016 16.5V8H4z" />
+        </svg>
+        Eliminar Todos
+      </button>
+      <button
+        mat-button
+        color="warn"
+        (click)="eliminarSeleccionados()"
+        [disabled]="!seleccionados.length"
+        class="flex items-center rounded-md bg-red-500 px-4 py-2 text-white transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-600">
+        <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M6 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" />
+        </svg>
+        Eliminar Seleccionados
+      </button>
+    </div>
+
+    <!-- Tabla de Miembros -->
+    <div class="max-h-96 overflow-x-auto overflow-y-auto">
+      <table mat-table [dataSource]="filteredData" matSort class="w-full min-w-full table-auto text-left">
+        <!-- Columna de Selección -->
+        <ng-container matColumnDef="seleccion">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-100 px-4 py-2">
+            <mat-checkbox
+              (change)="toggleSeleccionTodos($event)"
+              [checked]="isAllSelected()"
+              [indeterminate]="seleccionados.length > 0 && !isAllSelected()"
+              aria-label="Seleccionar todos">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let elemento" class="px-4 py-2">
+            <mat-checkbox
+              (change)="toggleSeleccion(elemento)"
+              [checked]="seleccionados.includes(elemento)"
+              aria-label="Seleccionar miembro">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Columna de Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            class="bg-gray-100 px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Nombre
+          </th>
+          <td mat-cell *matCellDef="let elemento" class="px-4 py-2 text-left text-base text-gray-800">
+            {{ elemento.nombre }}
+          </td>
+        </ng-container>
+
+        <!-- Columna de Correo -->
+        <ng-container matColumnDef="correo">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            class="bg-gray-100 px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Correo
+          </th>
+          <td mat-cell *matCellDef="let elemento" class="px-4 py-2 text-left text-base text-gray-800">
+            {{ elemento.correo }}
+          </td>
+        </ng-container>
+
+        <!-- Columna de Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="bg-gray-100 px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Acciones
+          </th>
+          <td mat-cell *matCellDef="let elemento" class="px-4 py-2 text-left">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="editarMiembro(elemento)"
+              matTooltip="Editar"
+              class="text-xl text-blue-500 transition duration-200 hover:text-blue-600">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="eliminarMiembro(elemento)"
+              matTooltip="Eliminar"
+              class="text-xl text-red-500 transition duration-200 hover:text-red-600">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Header y Row Definiciones -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-100"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50"></tr>
+
+        <!-- Row Vacío -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell py-4 text-center text-gray-500" colspan="4">No se encontraron miembros.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="mt-6 flex justify-end">
+    <button
+      mat-button
+      (click)="cerrarModal()"
+      class="rounded-md bg-gray-200 px-6 py-2 text-base transition duration-200 hover:bg-gray-300">
+      Cerrar
+    </button>
+  </div>
+</div>

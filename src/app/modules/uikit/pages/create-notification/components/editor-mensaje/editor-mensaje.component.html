@@ -1,0 +1,25 @@
+<div class="editor-container mx-auto w-full max-w-4xl rounded-lg border border-gray-300 bg-white p-6 shadow-md">
+  <!-- Campo para el título del mensaje -->
+  <div class="mb-4">
+    <label for="title" class="mb-2 block text-lg font-semibold text-gray-800">Título:</label>
+    <input
+      id="title"
+      type="text"
+      [(ngModel)]="title"
+      (ngModelChange)="onTitleChanged($event)"
+      class="w-full rounded-md border border-gray-300 p-3 transition duration-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400"
+      placeholder="Escribe el título de la notificación" />
+  </div>
+
+  <!-- Editor Quill para el contenido del mensaje -->
+  <div class="quill-editor-wrapper mb-10 h-80 rounded-sm">
+    <quill-editor
+      [(ngModel)]="message"
+      [modules]="modules"
+      (onContentChanged)="onContentChanged($event)"
+      class="min-h-52"
+      placeholder="Escribe tu mensaje con formato..."
+      style="height: 100%; width: 100%">
+    </quill-editor>
+  </div>
+</div>

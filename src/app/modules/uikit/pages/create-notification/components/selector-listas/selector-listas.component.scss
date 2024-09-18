@@ -1,0 +1,15 @@
+/* src/app/selector-listas/selector-listas.component.scss */
+
+/* Estilo para el botón del dropdown */
+button {
+  transition: background-color 0.3s;
+}
+
+button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+/* Estilos para la lista seleccionada */
+.mat-checkbox {
+  margin-right: 0.5rem;
+}
