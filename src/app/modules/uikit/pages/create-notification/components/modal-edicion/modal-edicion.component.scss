@@ -1,0 +1,23 @@
+/* src/app/modal-edicion/modal-edicion.component.scss */
+
+/* Estilo para el título del modal */
+h2.mat-dialog-title {
+  margin: 0;
+}
+
+/* Estilo para la tabla */
+table {
+  min-width: 600px; /* Tamaño mínimo de la tabla */
+}
+
+/* Responsive para dispositivos pequeños */
+@media (max-width: 768px) {
+  table {
+    min-width: 100%;
+  }
+}
+
+/* Opcional: Añadir algo de espacio alrededor de los botones de acción */
+.mat-icon-button {
+  margin-right: 8px;
+}

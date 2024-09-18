@@ -1,0 +1,10 @@
+<div class="mb-4">
+  <label for="tipo" class="block text-lg font-semibold text-gray-700">Tipo de Notificación:</label>
+  <select
+    id="tipo"
+    [(ngModel)]="tipoSeleccionado"
+    (ngModelChange)="onTipoChange($event)"
+    class="w-full rounded-lg border-gray-300 p-3 shadow-sm focus:border-blue-400 focus:ring-4 focus:ring-blue-400">
+    <option *ngFor="let tipo of tiposNotificacion" [value]="tipo">{{ tipo | titlecase }}</option>
+  </select>
+</div>

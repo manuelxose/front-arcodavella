@@ -1,0 +1,22 @@
+<div class="preview-container">
+  <h2>{{ title }}</h2>
+
+  <!-- Selector de Plantillas (Opcional) -->
+  <div class="template-selector">
+    <label for="template">Selecciona una plantilla:</label>
+    <select id="template" [(ngModel)]="selectedTemplateName" (change)="onTemplateChange()">
+      <option *ngFor="let template of templates" [value]="template.name">
+        {{ template.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Contenido del Mensaje -->
+  <div class="message-content" [innerHTML]="emailContent"></div>
+
+  <!-- Vista Previa del PDF -->
+  <div *ngIf="showPdfPreview" class="pdf-preview">
+    <button (click)="togglePdfPreview()">{{ pdfVisible ? 'Ocultar' : 'Mostrar' }} Vista Previa del PDF</button>
+    <iframe *ngIf="pdfVisible" [src]="pdfSrc" width="100%" height="600px"></iframe>
+  </div>
+</div>

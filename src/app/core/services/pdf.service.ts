@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas-pro'; // Import the html2canvas-pro package
+import QRCode from 'qrcode';
 
 @Injectable({
   providedIn: 'root',
@@ -109,5 +110,88 @@ export class PdfService {
         (el as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0)'; // Transparent as a fallback
       }
     });
+  }
+
+  /**
+   * Genera un PDF personalizado con los datos proporcionados y lo devuelve como una URL de datos.
+   * @param data Los datos del socio para incluir en el PDF.
+   * @returns Una promesa que resuelve con la URL de datos del PDF generado.
+   */
+  async generatePdfDataUrl(data: { numSocio: string; nombre: string; dni: string; email: string }): Promise<string> {
+    const doc = new jsPDF();
+
+    // Generar el código QR
+    const qrData = `${data.numSocio}|${data.nombre}|${data.dni}|${data.email}`;
+    const qrImageUrl = await QRCode.toDataURL(qrData);
+
+    // Añadir contenido al PDF
+
+    // Título principal centrado en negrita
+    doc.setFontSize(16);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('ASAMBLEA GENERAL ORDINARIA', doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
+    doc.setFont('Helvetica', 'normal');
+    doc.text('convocada para el día 2 de julio de 2024', doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+
+    doc.setFontSize(14);
+    doc.text('TARJETA DE ADMISIÓN:', 20, 60);
+
+    doc.setFontSize(12);
+    doc.setFont('Helvetica', 'bold');
+    doc.text(`Socio/a Cooperativista: ${data.nombre}`, 20, 70);
+    doc.setFont('Helvetica', 'normal');
+    doc.text(`DNI: ${data.dni}`, 20, 80);
+
+    // Añadir el código QR centrado
+    const qrWidth = 50;
+    const qrX = (doc.internal.pageSize.getWidth() - qrWidth) / 2;
+    doc.addImage(qrImageUrl, 'PNG', qrX, 90, qrWidth, qrWidth);
+
+    // Añadir cuadro antes de "DELEGO"
+    doc.rect(20, 150, 5, 5); // Dibujar un cuadrado
+    doc.text('DELEGO', 27, 154);
+
+    // Texto de delegación
+    const delegacionText =
+      'Confiero mi representación para esta Asamblea a .............................................................. ' +
+      'quien votará favorablemente las propuestas presentadas por el Consejo Rector, en relación con el Orden ' +
+      'del Día recogido en el anverso y aquellas otras que, aun no estando en él incluidas, puedan válidamente ' +
+      'suscitarse y resolverse en la Asamblea conforme a la Ley, salvo que se indique otra cosa en las siguientes ' +
+      'instrucciones para el ejercicio del voto:';
+
+    doc.setFontSize(12);
+    const delegacionLines = doc.splitTextToSize(delegacionText, doc.internal.pageSize.getWidth() - 40);
+    doc.text(delegacionLines, 20, 170);
+
+    // Calcular la posición Y después del texto de delegación
+    const textDimensions = doc.getTextDimensions(delegacionLines);
+    let currentY = 170 + textDimensions.h + 10; // Añadir un margen de 10
+
+    // Añadir líneas para instrucciones adicionales
+    doc.text(
+      '.............................................................................................................',
+      20,
+      currentY,
+    );
+    doc.text(
+      '.............................................................................................................',
+      20,
+      currentY + 10,
+    );
+    doc.text(
+      '.............................................................................................................',
+      20,
+      currentY + 20,
+    );
+    doc.text('..............................................................', 20, currentY + 30);
+
+    // Lugar y fecha
+    doc.text('En Vigo, a 14 de junio de 2024', 20, currentY + 50);
+
+    // Firma
+    doc.text('Firma Socio/a Cooperativista (OBLIGATORIA)', 20, currentY + 70);
+
+    // Retornar el PDF como una URL de datos
+    return doc.output('datauristring');
   }
 }

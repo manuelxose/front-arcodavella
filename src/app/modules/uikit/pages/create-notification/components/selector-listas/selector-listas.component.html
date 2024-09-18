@@ -1,0 +1,72 @@
+<!-- src/app/selector-listas/selector-listas.component.html -->
+
+<div class="relative mx-auto w-full max-w-md">
+  <!-- Selector de listas personalizado -->
+  <div class="mb-4">
+    <label class="mb-2 block text-center font-medium text-gray-700"> Selecciona una o varias listas </label>
+    <div class="relative">
+      <button
+        (click)="toggleDropdown()"
+        [disabled]="isDisabled"
+        class="flex w-full cursor-pointer items-center justify-between rounded border border-gray-300 bg-white px-4 py-2 text-left focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-50">
+        <span *ngIf="listasSeleccionadas.length === 0" class="text-gray-500"> Selecciona una o varias listas </span>
+        <span *ngIf="listasSeleccionadas.length > 0" class="text-gray-800">
+          {{ listasSeleccionadas.length }} lista(s) seleccionada(s)
+        </span>
+        <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            fill-rule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <!-- Dropdown -->
+      <div
+        *ngIf="dropdownOpen"
+        class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded border border-gray-300 bg-white shadow-lg">
+        <ul class="py-1">
+          <li *ngFor="let lista of listas" class="flex items-center justify-between px-4 py-2 hover:bg-blue-100">
+            <div>
+              <span class="font-medium text-gray-800">{{ lista.nombre }}</span>
+              <span class="block text-sm text-gray-500">{{ lista.destinatarios }} destinatarios</span>
+            </div>
+            <mat-checkbox
+              [checked]="listasSeleccionadas.includes(lista.nombre)"
+              (change)="toggleListaSeleccionada(lista.nombre)">
+            </mat-checkbox>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listas seleccionadas con opciones para editar y eliminar -->
+  <div *ngIf="listasSeleccionadas.length > 0" class="mt-4 rounded-lg bg-white p-4 shadow-md">
+    <h3 class="text-center text-lg font-semibold text-gray-800">Listas seleccionadas:</h3>
+    <div class="mt-2 space-y-2">
+      <div
+        *ngFor="let listaNombre of listasSeleccionadas"
+        class="flex items-center justify-between rounded-lg bg-gray-100 p-2">
+        <!-- Nombre de la lista seleccionada -->
+        <span class="font-medium text-gray-700">{{ listaNombre }}</span>
+
+        <!-- Botones para editar y eliminar -->
+        <div class="flex space-x-2">
+          <!-- Botón para editar -->
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="abrirModal(getListaPorNombre(listaNombre)!)"
+            matTooltip="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <!-- Botón para eliminar -->
+          <button mat-icon-button color="warn" (click)="eliminarListaSeleccionada(listaNombre)" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
