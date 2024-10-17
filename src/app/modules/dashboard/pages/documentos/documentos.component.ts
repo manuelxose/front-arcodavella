@@ -1,94 +1,79 @@
-import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+// src/app/documentos/documentos.component.ts
 
-interface Document {
-  name: string;
-  category: string;
-  uploadedDate: string;
-  size: string;
-  icon: string;
-  extension: string;
-}
+import { Component, NgModule, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { WPMedia } from 'src/app/core/models/wp.model';
+import { DocumentosService } from 'src/app/core/services/documentos.service';
 
 @Component({
   selector: 'app-documentos',
   templateUrl: './documentos.component.html',
   styleUrls: ['./documentos.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, NgFor],
+  imports: [CommonModule, FormsModule],
 })
-export class DocumentosComponent {
-  // Datos simulados
-  documents: Document[] = [
-    {
-      name: 'Informe Financiero Anual',
-      category: 'Finanzas',
-      uploadedDate: '15 de Agosto de 2023',
-      size: '1.5 MB',
-      icon: 'assets/icons/pdf-icon.svg',
-      extension: 'PDF',
-    },
-    {
-      name: 'Política de Recursos Humanos',
-      category: 'Recursos Humanos',
-      uploadedDate: '22 de Septiembre de 2023',
-      size: '850 KB',
-      icon: 'assets/icons/word-icon.svg',
-      extension: 'DOCX',
-    },
-    {
-      name: 'Balance de Gastos Mensuales',
-      category: 'Finanzas',
-      uploadedDate: '30 de Julio de 2023',
-      size: '450 KB',
-      icon: 'assets/icons/excel-icon.svg',
-      extension: 'XLSX',
-    },
-    {
-      name: 'Contrato Legal Actualizado',
-      category: 'Legal',
-      uploadedDate: '5 de Octubre de 2023',
-      size: '2 MB',
-      icon: 'assets/icons/pdf-icon.svg',
-      extension: 'PDF',
-    },
-    {
-      name: 'Guía de Tecnología 2023',
-      category: 'Tecnología',
-      uploadedDate: '10 de Julio de 2023',
-      size: '1.2 MB',
-      icon: 'assets/icons/word-icon.svg',
-      extension: 'DOCX',
-    },
-  ];
-
-  // Filtros
+export class DocumentosComponent implements OnInit {
+  mediaItems: WPMedia[] = [];
   searchTerm: string = '';
-  selectedCategory: string = 'all';
-  sortByDate: string = 'latest';
+  selectedMediaType: 'all' | 'image' | 'application/pdf' = 'all';
+  sortByDate: 'latest' | 'oldest' = 'latest';
 
-  // Método para filtrar documentos
-  filteredDocuments(): Document[] {
-    let filteredDocs = this.documents;
+  isLoading: boolean = false;
+  errorMessage: string = '';
+
+  constructor(private documentosService: DocumentosService) {}
+
+  ngOnInit(): void {
+    this.fetchMedia();
+  }
+
+  /** Obtener medios desde el servicio */
+  fetchMedia(): void {
+    this.isLoading = true;
+    this.documentosService.getMedia(this.selectedMediaType).subscribe({
+      next: (media: WPMedia[]) => {
+        this.mediaItems = media;
+        this.isLoading = false;
+        media.forEach((element) => {
+          if (element.media_type === 'file') console.log(element);
+        });
+      },
+      error: (error) => {
+        this.errorMessage = error.message;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  /** Formatear la fecha */
+  formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('es-ES', options);
+  }
+
+  /** Método para filtrar medios */
+  get filteredMedia(): WPMedia[] {
+    let filtered = this.mediaItems;
 
     // Filtrar por búsqueda de texto
     if (this.searchTerm) {
-      filteredDocs = filteredDocs.filter((doc) => doc.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
-    }
-
-    // Filtrar por categoría
-    if (this.selectedCategory !== 'all') {
-      filteredDocs = filteredDocs.filter((doc) => doc.category.toLowerCase() === this.selectedCategory);
+      filtered = filtered.filter((media) => media.title.rendered.toLowerCase().includes(this.searchTerm.toLowerCase()));
     }
 
     // Ordenar por fecha
-    filteredDocs = filteredDocs.sort((a, b) => {
-      const dateA = new Date(a.uploadedDate.split(' de ').reverse().join('-')).getTime();
-      const dateB = new Date(b.uploadedDate.split(' de ').reverse().join('-')).getTime();
+    filtered = filtered.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
       return this.sortByDate === 'latest' ? dateB - dateA : dateA - dateB;
     });
 
-    return filteredDocs;
+    return filtered;
+  }
+
+  /** Manejar cambios en los filtros */
+  onFilterChange(): void {
+    this.fetchMedia();
   }
 }

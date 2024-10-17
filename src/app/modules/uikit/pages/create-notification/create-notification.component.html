@@ -1,3 +1,5 @@
+<!-- src/app/modules/uikit/pages/create-notification/create-notification.component.html -->
+
 <div class="flex min-h-screen flex-col gap-6 bg-gray-100 p-6 lg:flex-row">
   <!-- Columna izquierda: Crear el mensaje -->
   <div class="flex-1 rounded-lg bg-white p-6 shadow-md">
@@ -14,6 +16,10 @@
         [title]="title"
         [message]="message"
         [usuarios]="usuariosSeleccionados"
+        [currentDate]="currentDate"
+        [assemblyDate]="assemblyDate"
+        (emailContentChanged)="onEmailContentChanged($event)"
+        (assemblyDateChanged)="onAssemblyDateChange($event)"
         [listas]="listasSeleccionadas">
       </app-preview-mensaje>
     </div>
@@ -28,7 +34,7 @@
     <div class="mb-6">
       <h3 class="mb-4 text-lg font-semibold text-gray-700">Seleccionar Usuarios</h3>
       <!-- Componente de búsqueda de usuarios -->
-      <app-busqueda-usuarios (usuarioSeleccionado)="agregarUsuario($event)"></app-busqueda-usuarios>
+      <app-busqueda-usuarios (usuariosSeleccionados)="agregarUsuario($event)"></app-busqueda-usuarios>
     </div>
 
     <!-- Selector de listas o grupos -->
@@ -39,7 +45,7 @@
 
     <!-- Selector del tipo de notificación -->
     <div class="mb-6">
-      <h3 class="mb-4 text-lg font-semibold text-gray-700">Seleccionar Notificacion</h3>
+      <h3 class="mb-4 text-lg font-semibold text-gray-700">Seleccionar Notificación</h3>
       <app-notification-type [(ngModel)]="type"></app-notification-type>
     </div>
 
@@ -51,9 +57,11 @@
       </button>
       <button
         class="rounded-lg bg-blue-600 px-4 py-2 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-blue-500"
-        (click)="sendNotification()">
+        (click)="confirmSendNotification()">
         Enviar Notificación
       </button>
     </div>
   </div>
 </div>
+<mat-progress-bar *ngIf="isGeneratingPdf" [value]="progressPercentage" mode="determinate"></mat-progress-bar>
+<p *ngIf="isGeneratingPdf">Generando PDFs: {{ progressPercentage }}%</p>

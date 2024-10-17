@@ -39,7 +39,7 @@ export class EditorMensajeComponent {
   }
 
   // Función que se ejecuta cuando el título cambia
-  onTitleChanged(event: any) {
-    this.titleChange.emit(event.target.value); // Emitimos el título al componente padre
+  onTitleChanged() {
+    this.titleChange.emit(this.title); // Emitimos el título al componente padre
   }
 }

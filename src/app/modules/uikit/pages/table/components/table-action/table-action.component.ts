@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 
 @Component({
   selector: 'app-table-action',
   standalone: true,
-  imports: [AngularSvgIconModule],
+  imports: [AngularSvgIconModule, CommonModule],
   templateUrl: './table-action.component.html',
   styleUrl: './table-action.component.scss',
 })

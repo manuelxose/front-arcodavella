@@ -22,6 +22,12 @@
       class="flex-none rounded-md bg-red-600 px-4 py-2.5 text-xs font-semibold text-primary-foreground">
       Borrar Socio
     </button>
+    <!-- Nuevo boton para exportar a Excel -->
+    <button
+      (click)="downloadExcel()"
+      class="flex-none rounded-md bg-green-600 px-4 py-2.5 text-xs font-semibold text-primary-foreground">
+      Descargar Excel
+    </button>
   </div>
 </div>
 
@@ -55,9 +61,7 @@
     [currentPage]="currentPage"
     [pageSize]="pageSize"
     (onPageChange)="onPageChange($event)"
-    (onPageSizeChange)="onPageSizeChange($event)"
-    >></app-table-footer
-  >
+    (onPageSizeChange)="onPageSizeChange($event)"></app-table-footer>
 </div>
 <app-upload-csv-modal #modal></app-upload-csv-modal>
 <app-delete-confirmation-modal

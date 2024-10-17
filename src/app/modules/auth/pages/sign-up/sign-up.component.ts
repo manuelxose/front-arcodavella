@@ -7,6 +7,7 @@ import { User } from 'src/app/core/models/user.model';
 import { NgClass, NgIf } from '@angular/common';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { evaluatePasswordStrength } from 'src/app/shared/utils/password';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-sign-up',
@@ -54,11 +55,11 @@ export class SignUpComponent implements OnInit {
   get f(): { [key: string]: AbstractControl } {
     return this.signUpForm.controls;
   }
-
   onSubmit(): void {
     this.submitted = true;
 
     if (this.signUpForm.invalid) {
+      toast.error('Please fill in all required fields correctly.'); // Usa ngx-sonner para mostrar errores
       return;
     }
 
@@ -67,10 +68,11 @@ export class SignUpComponent implements OnInit {
 
     this.authService.register(email, password).subscribe({
       next: (user: User) => {
-        console.log('SignUpComponent: Registration successful', user);
+        toast.success('Registration successful!'); // Mensaje de éxito
         this.router.navigate(['/dashboard']);
       },
-      error: (err: any) => {
+      error: (err: Error) => {
+        toast.error(err.message || 'Registration failed.'); // Mensaje de error
         console.error('SignUpComponent: Registration failed', err);
       },
     });
@@ -100,6 +102,11 @@ export class SignUpComponent implements OnInit {
     const password = this.signUpForm.get('password')?.value || '';
 
     this.passwordStrength = evaluatePasswordStrength(password);
+
+    if (this.passwordStrength < 3) {
+      toast.warning('Weak password. Consider adding more complexity.'); // Mensaje de advertencia
+    }
+
     console.log('entra', password, this.passwordStrength);
   }
 }

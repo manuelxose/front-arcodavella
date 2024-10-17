@@ -13,7 +13,7 @@
   <div *ngIf="filteredUsers.length > 0" class="relative">
     <ul class="absolute z-10 mt-2 max-h-48 w-full overflow-auto rounded-lg border border-gray-300 bg-white shadow-lg">
       <li *ngFor="let user of filteredUsers" class="cursor-pointer px-4 py-2 hover:bg-gray-100" (click)="addUser(user)">
-        {{ user.nombre }}
+        {{ user.name }}
       </li>
     </ul>
   </div>
@@ -25,7 +25,7 @@
       <span
         *ngFor="let user of selectedUsers"
         class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-blue-700">
-        {{ user.nombre }}
+        {{ user.name }}
         <button class="ml-2 text-red-500" (click)="removeUser(user)">x</button>
       </span>
     </div>

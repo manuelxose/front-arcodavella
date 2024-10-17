@@ -1,0 +1,76 @@
+<!-- src/app/modules/uikit/components/confirmation-dialog/confirmation-dialog.component.html -->
+
+<h2 mat-dialog-title class="text-center text-2xl font-semibold text-gray-900 md:text-3xl">Confirmar Envío</h2>
+
+<mat-dialog-content class="mt-4 space-y-6 p-4 md:p-6">
+  <!-- Sección del título del mensaje -->
+  <div class="space-y-2">
+    <p class="text-base text-gray-700 md:text-lg"><strong>Título:</strong> {{ data.title }}</p>
+  </div>
+
+  <!-- Sección de los destinatarios -->
+  <div class="space-y-2">
+    <p class="text-base text-gray-700 md:text-lg">
+      <strong>Destinatarios:</strong>
+    </p>
+    <ul class="list-inside list-disc text-sm text-gray-800 md:text-base">
+      <!-- Usuarios Sueltos -->
+      <li *ngIf="data.destinatarios.usuarios?.length > 0">
+        <strong>Usuarios:</strong> {{ data.destinatarios.usuarios.join(', ') }}
+      </li>
+      <!-- Listas con Miembros -->
+      <li *ngIf="data.destinatarios.listas?.length > 0">
+        <strong>Listas:</strong>
+        <ul class="ml-4 list-inside list-disc">
+          <li *ngFor="let lista of data.destinatarios.listas">
+            {{ lista.name }} ({{ lista.membersCount }} miembro{{ lista.membersCount !== 1 ? 's' : '' }})
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <!-- Total de Destinatarios -->
+    <p class="mt-2 text-sm text-gray-600 md:text-base">
+      <strong>Total de destinatarios:</strong> {{ data.destinatarios.total }} destinatario{{
+        data.destinatarios.total !== 1 ? 's' : ''
+      }}
+    </p>
+  </div>
+
+  <!-- Vista previa del mensaje con estilo macOS -->
+  <div class="rounded-lg border border-gray-300 bg-gray-50 p-6 text-base text-gray-800 shadow-md md:p-8">
+    <div [innerHTML]="data.message"></div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="flex flex-col items-center justify-end space-y-2 md:flex-row md:space-x-4 md:space-y-0">
+  <!-- Botón Cancelar -->
+  <button
+    mat-button
+    (click)="onCancel()"
+    class="w-full rounded-md bg-transparent py-2 text-gray-700 transition duration-150 ease-in-out hover:text-gray-900 hover:underline md:w-auto">
+    Cancelar
+  </button>
+
+  <!-- Botón Enviar -->
+  <button
+    mat-button
+    color="primary"
+    (click)="onConfirm()"
+    [disabled]="data.isLoading"
+    class="w-full rounded-md bg-blue-500 px-6 py-2 text-white shadow-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 hover:bg-blue-600 md:w-auto">
+    <!-- Mostrar "Enviar" cuando no está cargando -->
+    <span *ngIf="!data.isLoading">Enviar</span>
+    <!-- Mostrar spinner y "Enviando..." cuando está cargando -->
+    <span *ngIf="data.isLoading" class="flex items-center">
+      <svg
+        class="mr-3 inline-block h-5 w-5 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      Enviando...
+    </span>
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Crear nueva carpeta</h2>
+<mat-dialog-content>
+  <mat-form-field class="w-full">
+    <mat-label>Nombre de la carpeta</mat-label>
+    <input matInput [(ngModel)]="data.nombreCarpeta" />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [mat-dialog-close]="data.nombreCarpeta" cdkFocusInitial>Crear</button>
+</mat-dialog-actions>

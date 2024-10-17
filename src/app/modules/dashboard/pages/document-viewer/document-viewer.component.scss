@@ -1,0 +1,124 @@
+/* document-viewer.component.scss */
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* File Item Hover Effect */
+.file-item:hover {
+  background-color: #e0e0e0;
+}
+
+/* Selected File */
+.selected {
+  background-color: #cce5ff;
+}
+
+/* Breadcrumb Styling */
+nav[aria-label='breadcrumb'] {
+  font-size: 14px;
+}
+
+nav[aria-label='breadcrumb'] a {
+  color: #1976d2;
+}
+
+nav[aria-label='breadcrumb'] a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Barra de herramientas */
+.toolbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 8px;
+}
+
+/* Botones de acciones */
+.toolbar button {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toolbar button:hover {
+  background-color: #e5e5e5;
+}
+
+/* Panel de árbol de carpetas */
+.sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #e5e5e5;
+}
+
+/* Estilo de los nodos del árbol */
+.example-tree-node {
+  padding: 4px 8px;
+}
+
+.example-tree-node:hover {
+  background-color: #f1f1f1;
+}
+
+/* Panel de visualización de documentos y carpetas */
+.content-panel {
+  background-color: #ffffff;
+}
+
+/* Títulos */
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Tabla de detalles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 8px;
+}
+
+table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Estilo para las carpetas y archivos en vista de iconos */
+.grid .item {
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  padding: 8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.grid .item:hover {
+  background-color: #f1f1f1;
+  border-color: #0078d4;
+}

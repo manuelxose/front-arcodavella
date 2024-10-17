@@ -1,0 +1,23 @@
+<app-table
+  [data]="data"
+  [columns]="yourColumnsArray"
+  [title]="'Contactos'"
+  [selectable]="true"
+  [initialPageSize]="10"
+  (selectionChange)="onSelectionChange($event)">
+  <!-- Barra de acciones con estilo Windows 11 y selector de tipo de listado -->
+  <div table-actions class="action-bar">
+    <div class="action-bar-left">
+      <!-- Selector de tipo de listado -->
+      <select [(ngModel)]="selectedListType" (change)="onListTypeChange($event)" class="list-type-selector">
+        <option value="solicita-informacion">Solicita Información</option>
+        <!-- Puedes añadir más opciones aquí -->
+      </select>
+    </div>
+    <div class="action-bar-right">
+      <button (click)="addItem()" class="btn btn-primary">Añadir Contacto</button>
+      <button (click)="deleteSelected()" class="btn btn-danger">Eliminar Contacto</button>
+      <button (click)="downloadExcel()" class="btn btn-success">Descargar Excel</button>
+    </div>
+  </div>
+</app-table>
