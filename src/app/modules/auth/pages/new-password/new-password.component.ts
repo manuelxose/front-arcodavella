@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
@@ -20,12 +20,14 @@ export class NewPasswordComponent implements OnInit {
   passwordVisible = false;
   confirmPasswordVisible = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+  constructor(private route: ActivatedRoute, private authService: AuthService, private router: Router) {
+    // Crear nuevo formgroup para la nueva contraseña
+
+    this.newPasswordForm = new FormGroup({
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    });
+  }
 
   ngOnInit(): void {
     // Capturar el token de la URL
@@ -34,18 +36,18 @@ export class NewPasswordComponent implements OnInit {
     if (!this.resetToken) {
       // Si no hay token, redirigir a una página de error o al inicio de sesión
       console.error('No reset token found in the URL.');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/sign-in']);
       return;
     }
 
     // Crear el formulario para la nueva contraseña
-    this.newPasswordForm = this.fb.group(
-      {
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validator: this.passwordsMatchValidator },
-    );
+    // this.newPasswordForm = this.fb.group(
+    //   {
+    //     password: ['', [Validators.required, Validators.minLength(6)]],
+    //     confirmPassword: ['', [Validators.required]],
+    //   },
+    //   { validator: this.passwordsMatchValidator },
+    // );
   }
 
   // Validador para asegurarse de que las contraseñas coincidan

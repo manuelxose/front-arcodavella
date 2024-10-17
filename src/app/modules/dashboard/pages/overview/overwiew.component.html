@@ -1,0 +1,31 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Subheader -->
+  <overview-header></overview-header>
+
+  <!-- Primera Fila: Perfil, Promociones y Documentos -->
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <!-- Perfil y Promociones -->
+    <div class="md:col-span-3">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <!-- Tarjeta de Perfil -->
+        <div>
+          <overview-profile-card [user]="user"></overview-profile-card>
+        </div>
+        <!-- Lista de Promociones -->
+        <div class="mt-4">
+          <h2 class="mb-4 text-2xl font-semibold text-gray-800">Promociones Disponibles</h2>
+          <app-promociones></app-promociones>
+        </div>
+      </div>
+    </div>
+    <!-- Documentos con Scroll Horizontal -->
+    <div>
+      <overview-documents-card></overview-documents-card>
+    </div>
+  </div>
+
+  <!-- Segunda Fila: Carrusel del Blog -->
+  <div class="mt-8">
+    <app-blog-carousel></app-blog-carousel>
+  </div>
+</div>

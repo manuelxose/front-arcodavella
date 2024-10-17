@@ -13,10 +13,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 export interface Miembro {
-  nombre: string;
-  correo: string;
+  name: string;
+  email: string;
 }
 
 @Component({
@@ -35,6 +36,7 @@ export interface Miembro {
     MatSnackBarModule,
     MatCheckboxModule,
     MatDialogModule,
+    MatPaginatorModule,
   ],
   templateUrl: './modal-edicion.component.html',
   styleUrls: ['./modal-edicion.component.scss'],
@@ -46,14 +48,20 @@ export class ModalEdicionComponent implements OnInit {
   // Datos originales y filtrados
   dataSource: Miembro[] = [];
   filteredData: Miembro[] = [];
+  paginatedData: Miembro[] = [];
 
   // Término de búsqueda
   searchTerm: string = '';
+  pageSize = 5;
+  currentPage = 0;
+
+  totalMembers: number = 0;
 
   // Array para almacenar los miembros seleccionados
   seleccionados: Miembro[] = [];
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public dialogRef: MatDialogRef<ModalEdicionComponent>,
@@ -65,6 +73,8 @@ export class ModalEdicionComponent implements OnInit {
     // Clonar los datos recibidos para evitar mutaciones directas
     this.dataSource = [...this.data.miembros];
     this.filteredData = [...this.data.miembros];
+    this.paginatedData = this.filteredData.slice(0, this.pageSize);
+    this.totalMembers = this.filteredData.length; // Actualizamos el total
   }
 
   ngAfterViewInit() {
@@ -81,7 +91,7 @@ export class ModalEdicionComponent implements OnInit {
     const filterValue = this.searchTerm.trim().toLowerCase();
     this.filteredData = this.dataSource.filter(
       (miembro) =>
-        miembro.nombre.toLowerCase().includes(filterValue) || miembro.correo.toLowerCase().includes(filterValue),
+        miembro.name.toLowerCase().includes(filterValue) || miembro.email.toLowerCase().includes(filterValue),
     );
 
     // Reaplicar la ordenación después del filtrado
@@ -184,35 +194,23 @@ export class ModalEdicionComponent implements OnInit {
    * @param miembro Miembro a editar.
    */
   editarMiembro(miembro: Miembro): void {
-    const nuevoNombre = prompt('Editar Nombre:', miembro.nombre);
-    if (nuevoNombre === null || nuevoNombre.trim() === '') {
-      // El usuario canceló la edición o ingresó un nombre vacío
-      return;
-    }
+    const nuevoNombre = prompt('Editar Nombre:', miembro.name);
+    if (nuevoNombre === null || nuevoNombre.trim() === '') return;
 
-    const nuevoCorreo = prompt('Editar Correo:', miembro.correo);
-    if (nuevoCorreo === null || nuevoCorreo.trim() === '') {
-      // El usuario canceló la edición o ingresó un correo vacío
-      return;
-    }
+    const nuevoCorreo = prompt('Editar Correo:', miembro.email);
+    if (nuevoCorreo === null || nuevoCorreo.trim() === '') return;
 
-    // Validación básica del correo electrónico
     const correoValido = this.validarCorreo(nuevoCorreo);
     if (!correoValido) {
-      this.snackBar.open('Correo electrónico inválido.', 'Cerrar', {
-        duration: 3000,
-      });
+      this.snackBar.open('Correo electrónico inválido.', 'Cerrar', { duration: 3000 });
       return;
     }
 
-    // Actualizar el miembro con los nuevos datos
-    miembro.nombre = nuevoNombre.trim();
-    miembro.correo = nuevoCorreo.trim();
-    this.applyFilter(); // Reaplicar el filtro para actualizar la tabla
+    miembro.name = nuevoNombre.trim();
+    miembro.email = nuevoCorreo.trim();
+    this.applyFilter(); // Reapply filter after editing
 
-    this.snackBar.open(`Miembro ${miembro.nombre} actualizado.`, 'Cerrar', {
-      duration: 3000,
-    });
+    this.snackBar.open(`Miembro ${miembro.name} actualizado.`, 'Cerrar', { duration: 3000 });
   }
 
   /**
@@ -220,11 +218,11 @@ export class ModalEdicionComponent implements OnInit {
    * @param miembro Miembro a eliminar.
    */
   eliminarMiembro(miembro: Miembro): void {
-    const confirmacion = confirm(`¿Estás seguro de eliminar a ${miembro.nombre}?`);
+    const confirmacion = confirm(`¿Estás seguro de eliminar a ${miembro.name}?`);
     if (confirmacion) {
       this.dataSource = this.dataSource.filter((m) => m !== miembro);
       this.applyFilter(); // Reaplica el filtro para actualizar la vista
-      this.snackBar.open(`Miembro ${miembro.nombre} eliminado.`, 'Cerrar', {
+      this.snackBar.open(`Miembro ${miembro.name} eliminado.`, 'Cerrar', {
         duration: 3000,
       });
     }
@@ -245,5 +243,27 @@ export class ModalEdicionComponent implements OnInit {
   validarCorreo(correo: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(correo);
+  }
+
+  pageChanged(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    const start = this.currentPage * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedData = this.filteredData.slice(start, end);
+  }
+
+  enableEdit(elemento: any): void {
+    elemento.editing = true;
+  }
+
+  saveEdit(elemento: any): void {
+    elemento.editing = false;
+    // Aquí podrías hacer una llamada a la API para guardar los cambios
+  }
+
+  cancelEdit(elemento: any): void {
+    elemento.editing = false;
+    // Podrías revertir los cambios si es necesario
   }
 }

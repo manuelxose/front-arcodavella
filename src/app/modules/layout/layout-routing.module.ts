@@ -18,6 +18,12 @@ const routes: Routes = [
     component: LayoutComponent,
     loadChildren: () => import('../asamblea/asamblea.module').then((m) => m.AsambleaModule),
   },
+  {
+    path: 'uikit',
+    component: LayoutComponent,
+    loadChildren: () => import('../uikit/uikit.module').then((m) => m.UikitModule),
+  },
+
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },
 ];

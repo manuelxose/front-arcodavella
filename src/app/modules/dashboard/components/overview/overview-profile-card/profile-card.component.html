@@ -1,0 +1,102 @@
+<div class="relative ml-0 mr-0 mt-16 max-w-[36rem] rounded-lg bg-white p-8 shadow-lg">
+  <!-- Imagen de Perfil -->
+  <div class="absolute left-1/2 top-[-80px] -translate-x-1/2 transform">
+    <div class="relative">
+      <img
+        class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg"
+        src="https://ui-avatars.com/api/?name={{ user.name }}"
+        alt="Foto de {{ user.name }}" />
+      <button
+        class="absolute bottom-0 right-0 rounded-full bg-blue-600 p-2 text-white shadow-md transition hover:bg-blue-700"
+        (click)="changeProfilePicture()"
+        aria-label="Cambiar foto de perfil">
+        <fa-icon [icon]="['fas', 'camera']"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenido de la Tarjeta -->
+  <div class="mt-16 text-center">
+    <h2 class="text-2xl font-semibold text-gray-800">{{ user.name }}</h2>
+    <p class="text-gray-500">Socio Nº: {{ user.memberNumber }}</p>
+  </div>
+
+  <hr class="my-6 border-gray-300" />
+
+  <!-- Detalles del Usuario -->
+  <div class="mt-8 space-y-6">
+    <!-- Email -->
+    <div class="flex items-center">
+      <fa-icon [icon]="['fas', 'envelope']" class="h-6 w-6 flex-shrink-0 text-blue-600"></fa-icon>
+      <div class="ml-4">
+        <span class="block font-medium text-gray-700">Email</span>
+        <span class="block text-gray-600">{{ user.email }}</span>
+      </div>
+    </div>
+
+    <hr class="my-4 border-gray-200" />
+
+    <!-- Teléfono -->
+    <div class="flex items-center">
+      <fa-icon [icon]="['fas', 'phone']" class="h-6 w-6 flex-shrink-0 text-green-600"></fa-icon>
+      <div class="ml-4">
+        <span class="block font-medium text-gray-700">Teléfono</span>
+        <span class="block text-gray-600">{{ user.phone }}</span>
+      </div>
+    </div>
+
+    <hr class="my-4 border-gray-200" />
+
+    <!-- Dirección -->
+    <div class="flex items-center">
+      <fa-icon [icon]="['fas', 'map-marker-alt']" class="h-6 w-6 flex-shrink-0 text-red-600"></fa-icon>
+      <div class="ml-4">
+        <span class="block font-medium text-gray-700">Dirección</span>
+        <span class="block text-gray-600">{{ user.address }}</span>
+      </div>
+    </div>
+
+    <hr class="my-4 border-gray-200" />
+
+    <!-- Número de Cuenta -->
+    <div class="flex items-center">
+      <fa-icon [icon]="['fas', 'university']" class="h-6 w-6 flex-shrink-0 text-purple-600"></fa-icon>
+      <div class="ml-4">
+        <span class="block font-medium text-gray-700">Número de Cuenta</span>
+        <span class="block text-gray-600">
+          <span *ngIf="showAccountNumber; else maskedAccount">{{ user.numeroCuenta }}</span>
+          <ng-template #maskedAccount>{{ maskAccountNumber(user.numeroCuenta) }}</ng-template>
+        </span>
+        <button
+          class="mt-1 text-sm text-blue-600 focus:outline-none hover:underline"
+          (click)="toggleAccountVisibility()"
+          aria-label="Mostrar/Ocultar número de cuenta">
+          {{ showAccountNumber ? 'Ocultar' : 'Mostrar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-6 border-gray-300" />
+
+  <!-- Acciones del Perfil -->
+  <div class="mt-8 flex justify-around">
+    <!-- Editar Perfil -->
+    <button
+      class="flex items-center text-blue-600 focus:outline-none hover:text-blue-800"
+      (click)="editProfile()"
+      aria-label="Editar perfil">
+      <fa-icon [icon]="['fas', 'edit']" class="mr-2 h-5 w-5"></fa-icon>
+      Editar Perfil
+    </button>
+
+    <!-- Contactar -->
+    <button
+      class="flex items-center text-green-600 focus:outline-none hover:text-green-800"
+      (click)="contactUser()"
+      aria-label="Contactar usuario">
+      <fa-icon [icon]="['fas', 'comments']" class="mr-2 h-5 w-5"></fa-icon>
+      Contactar
+    </button>
+  </div>
+</div>

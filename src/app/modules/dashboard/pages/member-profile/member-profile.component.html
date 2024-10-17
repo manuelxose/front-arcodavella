@@ -1,240 +1,312 @@
-<div class="container mx-auto p-6">
-  <!-- Banner con imagen de fondo a la izquierda -->
+<div class="container mx-auto p-4 sm:p-6">
+  <!-- Banner Superior con Imagen de Fondo -->
   <div
-    class="relative h-64 overflow-hidden rounded-xl bg-cover bg-center shadow-2xl"
-    style="background-image: url('../../../../../assets/bg/arcodavella-banner-navia.jpg')">
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="absolute inset-0 flex items-center justify-start p-8">
-      <div class="text-left">
-        <h1 class="text-5xl font-extrabold text-white drop-shadow-2xl">Perfil de Cooperativista</h1>
-        <p class="mt-4 text-2xl font-light text-gray-200">Arco da Vella Sociedade Cooperativa Galega</p>
+    class="relative h-60 overflow-hidden rounded-t-3xl bg-cover bg-center sm:h-72 md:h-96"
+    style="background-image: url('assets/bg/arcodavella-banner-navia.jpg')">
+    <!-- Overlay con gradiente para mejorar la legibilidad -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
+
+    <!-- Forma personalizada: Corte en la parte inferior izquierda con transparencia -->
+    <svg class="absolute bottom-0 left-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <polygon points="0,0 100,0 100,100 25,100 0,75" fill="rgba(255, 255, 255, 0.3)" />
+    </svg>
+
+    <!-- Indicador de la sección actual -->
+    <div
+      class="absolute left-4 top-4 z-20 rounded-full bg-blue-600 px-4 py-2 text-sm text-white shadow-lg sm:text-base">
+      Perfil de Socio
+    </div>
+
+    <!-- Tarjeta de Perfil con fondo blanco y bordes redondeados -->
+    <div
+      class="absolute bottom-0 z-20 mx-4 flex w-full min-w-max max-w-md items-center rounded-tr-lg border-r-[1.5rem] border-t-[1.5rem] border-card bg-card sm:mx-6 sm:w-96 md:w-[600px] lg:mx-auto">
+      <!-- Tarjeta Interior para bordes internos -->
+      <div class="z-30 m-0 w-full min-w-max rounded-lg border-8 border-white bg-white p-4 sm:p-6">
+        <!-- Contenedor Flex para Imagen y Datos del Perfil -->
+        <div class="flex flex-col items-center sm:flex-row">
+          <!-- Imagen de Perfil -->
+          <div class="relative flex-shrink-0">
+            <img
+              [src]="profileImageUrl"
+              alt="Foto de perfil"
+              class="h-24 w-24 rounded-full border-4 border-white object-cover shadow-xl sm:h-28 sm:w-28 md:h-32 md:w-32" />
+
+            <!-- Botón para editar imagen de perfil -->
+            <label
+              *ngIf="true"
+              class="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition-colors duration-300 hover:bg-blue-700 sm:h-10 sm:w-10">
+              <fa-icon [icon]="faCamera" class="text-xs sm:text-sm"></fa-icon>
+              <input type="file" (change)="onProfileImageChange($event)" accept="image/*" class="hidden" />
+            </label>
+          </div>
+
+          <!-- Información del Perfil -->
+          <div class="mt-4 flex-1 sm:ml-6 sm:mt-0">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <!-- Nombre del Socio -->
+              <h1 class="text-center text-xl font-extrabold text-gray-800 sm:text-left sm:text-2xl md:text-3xl">
+                {{ memberForm.get('name')?.value || 'Socio' }}
+              </h1>
+              <!-- Ícono adicional para editar perfil (opcional) -->
+              <button *ngIf="false" class="mt-2 text-gray-500 hover:text-gray-700 sm:mt-0">
+                <fa-icon [icon]="faEdit" class="text-md sm:text-lg"></fa-icon>
+              </button>
+            </div>
+            <!-- Número de Socio -->
+            <p class="mt-2 text-center text-xs text-gray-600 sm:text-left sm:text-sm">
+              <span class="font-semibold text-gray-700">Número de Socio:</span>
+              {{ memberForm.get('memberNumber')?.value || 'Pendiente' }}
+            </p>
+            <!-- Promoción Actual -->
+            <p class="mt-1 text-center text-xs text-gray-600 sm:text-left sm:text-sm">
+              <span class="font-semibold text-gray-700">Promoción Actual:</span>
+              {{ memberForm.get('promotion')?.value || 'Pau de Navia' }}
+            </p>
+            <!--  Última actualización -->
+            <p class="mt-1 text-center text-xs text-gray-600 sm:text-left sm:text-sm">
+              <span class="font-semibold text-gray-400">Última actualización:</span>
+              {{ memberForm.get('updatedAt')?.value | date : 'short' || '' }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Contenedor Principal -->
-  <div class="mx-auto mt-8 rounded-2xl bg-white p-6 shadow-lg">
-    <!-- Encabezado con Nombre y Número de Socio -->
-    <div class="mb-6 rounded-2xl bg-gradient-to-r from-blue-50 via-white to-blue-50 p-8 shadow-lg">
-      <div class="text-center">
-        <h2 class="text-3xl font-bold text-gray-800">Bienvenido, {{ member.name || 'Socio' }}!</h2>
-        <p class="mt-2 text-gray-600">Aquí puedes ver y editar tu información personal</p>
+  <div class="mx-auto mt-24 rounded-2xl bg-white p-6 shadow-lg sm:mt-32 sm:p-8">
+    <!-- Información de Perfil -->
+    <form [formGroup]="memberForm" class="space-y-6">
+      <!-- Sección: Email y Teléfono -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Email -->
+        <div>
+          <label class="mb-1 flex items-center text-sm font-medium text-gray-700 sm:block">
+            <fa-icon [icon]="faEnvelope" class="mr-2 text-blue-600"></fa-icon>Email
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            [class.border-red-500]="memberForm.get('email')?.invalid && memberForm.get('email')?.touched"
+            class="block w-full rounded-md border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-base"
+            [readonly]="!isEditing"
+            attr.aria-invalid="{{ memberForm.get('email')?.invalid }}"
+            aria-describedby="email-error" />
+          <div *ngIf="getEmailError()" id="email-error" class="mt-1 text-sm text-red-500">
+            {{ getEmailError() }}
+          </div>
+        </div>
+        <!-- Teléfono -->
+        <div>
+          <label class="mb-1 flex items-center text-sm font-medium text-gray-700 sm:block">
+            <fa-icon [icon]="faPhone" class="mr-2 text-blue-600"></fa-icon>Teléfono
+          </label>
+          <input
+            type="text"
+            formControlName="phone"
+            [class.border-red-500]="memberForm.get('phone')?.invalid && memberForm.get('phone')?.touched"
+            class="block w-full rounded-md border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-base"
+            [readonly]="!isEditing"
+            attr.aria-invalid="{{ memberForm.get('phone')?.invalid }}"
+            aria-describedby="phone-error" />
+          <div *ngIf="getPhoneError()" id="phone-error" class="mt-1 text-sm text-red-500">
+            {{ getPhoneError() }}
+          </div>
+        </div>
       </div>
-      <div class="mt-6 text-center">
-        <span class="block text-lg font-medium text-gray-500">Número de Socio:</span>
-        <span class="block text-5xl font-extrabold text-blue-600">{{ member.memberNumber || 'Pendiente' }}</span>
+
+      <!-- Sección: Dirección y Ocupación -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Dirección -->
+        <div>
+          <label class="mb-1 flex items-center text-sm font-medium text-gray-700 sm:block">
+            <fa-icon [icon]="faMapMarkerAlt" class="mr-2 text-blue-600"></fa-icon>Dirección
+          </label>
+          <input
+            type="text"
+            formControlName="address"
+            class="block w-full rounded-md border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-base"
+            [readonly]="!isEditing"
+            aria-describedby="address-help" />
+          <small id="address-help" class="text-xs text-gray-500 sm:text-sm"
+            >Puedes actualizar tu dirección actual.</small
+          >
+        </div>
+        <!-- Ocupación -->
+        <div>
+          <label class="mb-1 flex items-center text-sm font-medium text-gray-700 sm:block">
+            <fa-icon [icon]="faBriefcase" class="mr-2 text-blue-600"></fa-icon>Ocupación
+          </label>
+          <input
+            type="text"
+            formControlName="occupation"
+            class="block w-full rounded-md border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-base"
+            [readonly]="!isEditing"
+            aria-describedby="occupation-help" />
+          <small id="occupation-help" class="text-xs text-gray-500 sm:text-sm">Tu ocupación actual.</small>
+        </div>
+      </div>
+
+      <!-- Sección: Fecha de Nacimiento y Número de Cuenta -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Fecha de Nacimiento -->
+        <div>
+          <label class="mb-1 block items-center text-sm font-medium text-gray-700 sm:flex">
+            <fa-icon [icon]="faCalendarAlt" class="mr-2 text-blue-600"></fa-icon>Fecha de Ingreso
+          </label>
+          <input
+            type="date"
+            formControlName="dateOfBirth"
+            [class.border-red-500]="memberForm.get('dateOfBirth')?.invalid && memberForm.get('dateOfBirth')?.touched"
+            class="block w-full rounded-md border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-base"
+            [readonly]="!isEditing"
+            attr.aria-invalid="{{ memberForm.get('dateOfBirth')?.invalid }}"
+            aria-describedby="dob-error" />
+          <div *ngIf="getDateOfBirthError()" id="dob-error" class="mt-1 text-sm text-red-500">
+            {{ getDateOfBirthError() }}
+          </div>
+        </div>
+        <!-- Número de Cuenta -->
+        <div>
+          <label class="mb-1 block items-center text-sm font-medium text-gray-700 sm:flex">
+            <fa-icon [icon]="faUniversity" class="mr-2 text-blue-600"></fa-icon>Número de Cuenta
+          </label>
+          <div class="relative">
+            <input
+              [type]="showAccountNumber ? 'text' : 'password'"
+              formControlName="accountNumber"
+              [class.border-red-500]="
+                memberForm.get('accountNumber')?.invalid && memberForm.get('accountNumber')?.touched
+              "
+              class="block w-full rounded-md border-gray-300 p-2 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-base"
+              [readonly]="!isEditing"
+              attr.aria-invalid="{{ memberForm.get('accountNumber')?.invalid }}"
+              aria-describedby="account-error" />
+            <button
+              type="button"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 focus:outline-none"
+              (click)="toggleAccountVisibility()"
+              aria-label="Toggle Account Number Visibility">
+              <fa-icon [icon]="showAccountNumber ? faEyeSlash : faEye" class="text-gray-500"></fa-icon>
+            </button>
+          </div>
+          <div *ngIf="getAccountError()" id="account-error" class="mt-1 text-sm text-red-500">
+            {{ getAccountError() }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="mt-8 flex flex-col justify-end space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+        <button
+          *ngIf="!isEditing"
+          type="button"
+          class="flex items-center justify-center rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-700"
+          (click)="onEdit()">
+          <fa-icon [icon]="faEdit" class="mr-2"></fa-icon>Editar Perfil
+        </button>
+        <button
+          *ngIf="isEditing"
+          type="button"
+          class="flex items-center justify-center rounded-md bg-gray-200 px-6 py-3 text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 hover:bg-gray-300"
+          (click)="onCancel()">
+          Cancelar
+        </button>
+        <button
+          *ngIf="isEditing"
+          type="button"
+          class="flex items-center justify-center rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 hover:bg-green-700"
+          (click)="onSave()">
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- src/app/components/member-profile/member-profile.component.html -->
+
+  <!-- Sección para Subir Documentos -->
+  <div class="mx-auto mt-8 rounded-2xl bg-white p-6 shadow-lg sm:p-8">
+    <h3 class="mb-6 text-center text-2xl font-bold text-gray-900 sm:text-left">Documentos</h3>
+
+    <!-- Botón para Subir Documentos -->
+    <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
+      <label
+        class="flex cursor-pointer items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-700">
+        <fa-icon [icon]="faUpload" class="mr-2"></fa-icon>Subir Documento
+        <input
+          type="file"
+          (change)="onDocumentUpload($event)"
+          accept=".pdf,.doc,.docx,.jpg,.png"
+          class="hidden"
+          [disabled]="isUploadingDocument"
+          multiple />
+      </label>
+
+      <!-- Indicador de Carga para Subir Documentos -->
+      <div *ngIf="isUploadingDocument" class="flex items-center space-x-2 text-blue-600">
+        <fa-icon [icon]="faUpload" class="animate-spin"></fa-icon>
+        <span>Subiendo documento(s)...</span>
       </div>
     </div>
 
-    <!-- Descripción de la sección de Contacto -->
-    <h3 class="mb-4 text-2xl font-bold text-gray-900">Información de Contacto</h3>
+    <!-- Campo de Búsqueda de Documentos -->
+    <div class="mt-6">
+      <input
+        type="text"
+        placeholder="Buscar documento..."
+        [(ngModel)]="searchTerm"
+        class="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none" />
+    </div>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <!-- Contacto (Email) -->
-      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <label class="block text-sm text-gray-500">Email</label>
-            <span *ngIf="!isEditing['email']" class="text-xl text-gray-900">{{ member.email }}</span>
-            <input
-              *ngIf="isEditing['email']"
-              [(ngModel)]="member.email"
-              class="mt-2 w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <!-- Lista de Documentos Subidos -->
+    <div class="mt-6">
+      <h4 class="mb-4 text-center text-lg font-semibold text-gray-800 sm:text-left">Documentos Subidos</h4>
+      <ul class="space-y-4">
+        <!-- Utilizar *ngFor para listar documentos filtrados -->
+        <li
+          *ngFor="let documento of filteredDocuments"
+          class="flex flex-col items-center justify-between rounded-md bg-gray-50 p-4 shadow-sm sm:flex-row">
+          <div class="mb-2 flex items-center sm:mb-0">
+            <!-- Previsualización del Documento -->
+            <ng-container [ngSwitch]="getMimeType(documento.name)">
+              <!-- Previsualización de Imágenes -->
+              <img
+                *ngSwitchCase="'image'"
+                [src]="documento.url"
+                alt="{{ documento.name }}"
+                class="mr-2 h-12 w-12 rounded object-cover" />
+              <!-- Icono para PDFs -->
+              <fa-icon *ngSwitchCase="'application/pdf'" [icon]="faFileAlt" class="mr-2 text-red-600"></fa-icon>
+              <!-- Icono Genérico para Otros Tipos de Archivos -->
+              <fa-icon *ngSwitchDefault [icon]="faFileAlt" class="mr-2 text-gray-600"></fa-icon>
+            </ng-container>
+            <span class="text-center text-gray-800 sm:text-left">{{ documento.name }}</span>
           </div>
-          <!-- Botón para editar -->
-          <button
-            *ngIf="!isEditing['email']"
-            (click)="editField('email')"
-            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
-            Editar
-          </button>
-
-          <!-- Botón para enviar cambios -->
-          <button
-            *ngIf="isEditing['email']"
-            (click)="sendUpdate('email')"
-            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
-            Enviar
-          </button>
-
-          <!-- Botón para cancelar la edición -->
-          <button
-            *ngIf="isEditing['email']"
-            (click)="cancelEdit('email')"
-            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
-            Cancelar
-          </button>
-        </div>
-        <div *ngIf="isPendingApproval['email']" class="mt-2 text-sm text-orange-500">
-          Tu actualización de email está pendiente de aprobación.
-        </div>
-      </div>
-
-      <!-- Teléfono -->
-      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <label class="block text-sm text-gray-500">Teléfono</label>
-            <span *ngIf="!isEditing['phone']" class="text-xl text-gray-900">{{
-              member.phone || 'Añadir Teléfono'
-            }}</span>
-            <input
-              *ngIf="isEditing['phone']"
-              [(ngModel)]="member.phone"
-              class="mt-2 w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-          </div>
-          <button
-            *ngIf="!isEditing['phone']"
-            (click)="editField('phone')"
-            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
-            Editar
-          </button>
-          <button
-            *ngIf="isEditing['phone']"
-            (click)="sendUpdate('phone')"
-            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
-            Enviar
-          </button>
-          <button
-            *ngIf="isEditing['phone']"
-            (click)="cancelEdit('phone')"
-            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
-            Cancelar
-          </button>
-        </div>
-        <div *ngIf="isPendingApproval['phone']" class="mt-2 text-sm text-orange-500">
-          Tu actualización de teléfono está pendiente de aprobación.
-        </div>
-      </div>
-
-      <!-- Dirección -->
-      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <label class="block text-sm text-gray-500">Dirección</label>
-            <span *ngIf="!isEditing['address']" class="text-xl text-gray-900">{{
-              member.address || 'Añadir dirección'
-            }}</span>
-            <input
-              *ngIf="isEditing['address']"
-              [(ngModel)]="member.address"
-              class="mt-2 w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-          </div>
-          <button
-            *ngIf="!isEditing['address']"
-            (click)="editField('address')"
-            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
-            Editar
-          </button>
-          <button
-            *ngIf="isEditing['address']"
-            (click)="sendUpdate('address')"
-            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
-            Enviar
-          </button>
-          <button
-            *ngIf="isEditing['address']"
-            (click)="cancelEdit('address')"
-            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
-            Cancelar
-          </button>
-        </div>
-        <div *ngIf="isPendingApproval['address']" class="mt-2 text-sm text-orange-500">
-          Tu actualización de dirección está pendiente de aprobación.
-        </div>
-      </div>
-
-      <!-- Número de Cuenta con desenfoque y edición -->
-      <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <label class="block text-sm text-gray-500">Número de Cuenta</label>
-            <div class="mt-2">
-              <!-- Mostrar el número de cuenta o el input para editar -->
-              <span *ngIf="!isEditing['accountNumber'] && showAccountNumber" class="text-xl text-gray-900">{{
-                member.accountNumber
-              }}</span>
-              <span *ngIf="!isEditing['accountNumber'] && !showAccountNumber" class="text-xl text-gray-900 blur-sm"
-                >**** **** ****</span
-              >
-
-              <input
-                *ngIf="isEditing['accountNumber']"
-                [(ngModel)]="member.accountNumber"
-                class="w-full rounded-lg border border-gray-300 p-2 text-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            </div>
-          </div>
-          <!-- Botón para mostrar/ocultar el número de cuenta -->
-          <button class="ml-3 text-sm font-semibold text-blue-500 hover:underline" (click)="toggleAccountNumber()">
-            {{ showAccountNumber ? 'Ocultar' : 'Mostrar' }}
-          </button>
-
-          <!-- Botón para editar el número de cuenta -->
-          <button
-            *ngIf="!isEditing['accountNumber']"
-            (click)="editField('accountNumber')"
-            class="ml-3 text-sm font-semibold text-blue-500 hover:underline">
-            Editar
-          </button>
-
-          <!-- Botón para enviar cambios -->
-          <button
-            *ngIf="isEditing['accountNumber']"
-            (click)="sendUpdate('accountNumber')"
-            class="ml-3 text-sm font-semibold text-green-500 hover:underline">
-            Enviar
-          </button>
-
-          <!-- Botón para cancelar la edición -->
-          <button
-            *ngIf="isEditing['accountNumber']"
-            (click)="cancelEdit('accountNumber')"
-            class="ml-3 text-sm font-semibold text-red-500 hover:underline">
-            Cancelar
-          </button>
-        </div>
-
-        <!-- Mensaje de aprobación pendiente -->
-        <div *ngIf="isPendingApproval['accountNumber']" class="mt-2 text-sm text-orange-500">
-          Tu actualización de cuenta está pendiente de aprobación.
-        </div>
-      </div>
-      <!-- Bloque de Información Financiera -->
-      <div class="mt-8 rounded-2xl bg-white">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <h3 class="text-2xl font-bold text-gray-900">Historial Financiero</h3>
-          </div>
-        </div>
-
-        <!-- Lista de Facturas -->
-        <div class="mt-6 space-y-4">
-          <!-- Factura 1 -->
-          <div
-            class="flex flex-col items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-6 shadow-sm md:flex-row">
-            <div class="mb-4 md:mb-0">
-              <h4 class="text-lg font-semibold text-gray-900">Factura #1234</h4>
-              <span class="block text-sm text-gray-500">Fecha: 15/08/2023</span>
-            </div>
+          <div class="flex items-center space-x-2">
+            <!-- Enlace para Ver el Documento -->
+            <a
+              *ngIf="isImage(documento.name) || isPdf(documento.name)"
+              [href]="documento.url"
+              target="_blank"
+              class="text-blue-600 hover:underline"
+              aria-label="Ver {{ documento.name }}">
+              <fa-icon [icon]="faEye"></fa-icon>
+            </a>
+            <!-- Botón para Eliminar el Documento -->
             <button
-              class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
-              Descargar PDF
+              class="text-red-600 hover:underline"
+              (click)="onDeleteDocument(documento.name)"
+              aria-label="Eliminar {{ documento.name }}">
+              <fa-icon [icon]="faTrash"></fa-icon>
             </button>
           </div>
-
-          <!-- Factura 2 -->
-          <div
-            class="flex flex-col items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-6 shadow-sm md:flex-row">
-            <div class="mb-4 md:mb-0">
-              <h4 class="text-lg font-semibold text-gray-900">Factura #1235</h4>
-              <span class="block text-sm text-gray-500">Fecha: 15/09/2023</span>
-            </div>
-            <button
-              class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
-              Descargar PDF
-            </button>
-          </div>
-        </div>
+        </li>
+      </ul>
+      <!-- Mensaje si no hay documentos -->
+      <div
+        *ngIf="filteredDocuments.length === 0 && !isUploadingDocument"
+        class="mt-4 text-center text-gray-500 sm:text-left">
+        No has subido ningún documento o no se encontraron documentos con ese nombre.
       </div>
     </div>
   </div>

@@ -1,67 +1,135 @@
-<div class="min-h-screen bg-gray-50 p-8">
-  <!-- Título de la página -->
-  <div class="mb-8 text-center">
-    <h1 class="text-4xl font-bold text-gray-900">Descarga de Documentos</h1>
-    <p class="mt-2 text-lg text-gray-600">
-      Aquí puedes descargar todos los documentos que están disponibles. Usa los filtros para encontrar los archivos más
-      rápidamente.
-    </p>
+<!-- src/app/documentos/documentos.component.html -->
+
+<div class="flex h-screen flex-col bg-gray-50">
+  <!-- Cabecera fija -->
+  <div class="sticky top-0 z-10 bg-white p-6 shadow-md md:p-8">
+    <!-- Título de la página -->
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-bold text-gray-900 md:text-4xl">Galería de Medios</h1>
+      <p class="text-md mt-2 text-gray-600 md:text-lg">
+        Explora todos los medios disponibles. Usa los filtros para encontrar imágenes o documentos PDF más rápidamente.
+      </p>
+    </div>
+
+    <!-- Filtros de búsqueda -->
+    <div class="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-x-4 md:space-y-0">
+      <div class="w-full md:w-1/3">
+        <label for="search" class="block text-sm font-medium text-gray-700">Buscar por nombre</label>
+        <input
+          type="text"
+          id="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar medios..."
+          (input)="onFilterChange()"
+          class="mt-1 w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 md:p-3" />
+      </div>
+      <div class="w-full md:w-1/3">
+        <label for="mediaType" class="block text-sm font-medium text-gray-700">Filtrar por tipo de medio</label>
+        <select
+          id="mediaType"
+          [(ngModel)]="selectedMediaType"
+          (change)="onFilterChange()"
+          class="mt-1 w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 md:p-3">
+          <option value="all">Todos los medios</option>
+          <option value="image">Imágenes</option>
+          <option value="application/pdf">Documentos PDF</option>
+        </select>
+      </div>
+      <div class="w-full md:w-1/3">
+        <label for="date" class="block text-sm font-medium text-gray-700">Ordenar por fecha</label>
+        <select
+          id="date"
+          [(ngModel)]="sortByDate"
+          (change)="onFilterChange()"
+          class="mt-1 w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400 md:p-3">
+          <option value="latest">Más reciente</option>
+          <option value="oldest">Más antiguo</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <!-- Filtros de búsqueda -->
-  <div class="mb-8 flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-    <div class="w-full md:w-1/3">
-      <label for="search" class="block text-sm font-medium text-gray-700">Buscar por nombre</label>
-      <input
-        type="text"
-        id="search"
-        [(ngModel)]="searchTerm"
-        placeholder="Buscar documentos..."
-        class="mt-1 w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+  <!-- Contenido desplazable -->
+  <div class="flex-1 overflow-y-auto p-4 md:p-8">
+    <!-- Indicador de Carga -->
+    <div *ngIf="isLoading" class="text-center">
+      <p class="text-lg text-blue-500">Cargando medios...</p>
     </div>
-    <div class="w-full md:w-1/3">
-      <label for="category" class="block text-sm font-medium text-gray-700">Filtrar por categoría</label>
-      <select
-        id="category"
-        [(ngModel)]="selectedCategory"
-        class="mt-1 w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
-        <option value="all">Todas las categorías</option>
-        <option value="finanzas">Finanzas</option>
-        <option value="recursos_humanos">Recursos Humanos</option>
-        <option value="legal">Legal</option>
-        <option value="tecnologia">Tecnología</option>
-      </select>
-    </div>
-    <div class="w-full md:w-1/3">
-      <label for="date" class="block text-sm font-medium text-gray-700">Ordenar por fecha</label>
-      <select
-        id="date"
-        [(ngModel)]="sortByDate"
-        class="mt-1 w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
-        <option value="latest">Más reciente</option>
-        <option value="oldest">Más antiguo</option>
-      </select>
-    </div>
-  </div>
 
-  <!-- Listado de documentos -->
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-    <div *ngFor="let document of filteredDocuments()" class="rounded-lg bg-white p-6 shadow-lg">
-      <div class="flex items-center space-x-4">
-        <img [src]="document.icon" alt="{{ document.name }} Icon" class="h-12 w-12" />
-        <div>
-          <h3 class="text-xl font-semibold text-gray-900">{{ document.name }}</h3>
-          <p class="text-sm text-gray-500">Categoría: {{ document.category }}</p>
-          <p class="text-sm text-gray-500">Subido: {{ document.uploadedDate }}</p>
+    <!-- Mensaje de Error -->
+    <div *ngIf="errorMessage" class="text-center text-red-500">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Listado de medios -->
+    <div *ngIf="!isLoading && !errorMessage">
+      <div *ngIf="filteredMedia.length > 0; else noMedia" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div *ngFor="let media of filteredMedia" class="rounded-lg bg-white p-4 shadow-lg md:p-6">
+          <div class="flex flex-col items-center">
+            <!-- Verificar el tipo de medio -->
+            <ng-container [ngSwitch]="media.mime_type">
+              <!-- Caso para imágenes -->
+              <ng-container *ngSwitchCase="'image'">
+                <img
+                  [src]="media.source_url"
+                  [alt]="media.alt_text"
+                  class="mb-4 h-40 w-full rounded-md object-cover"
+                  loading="lazy"
+                  onerror="this.onerror=null;this.src='assets/icons/image-placeholder.svg';" />
+              </ng-container>
+
+              <!-- Caso para PDFs -->
+              <ng-container *ngSwitchCase="'application/pdf'">
+                <div class="flex flex-col items-center">
+                  <img
+                    src="assets/icons/tablericons/pdf-icon.svg"
+                    alt="PDF Icon"
+                    class="mb-4 h-40 w-40"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='assets/icons/pdf-placeholder.svg';" />
+                  <a
+                    [href]="media.source_url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="mt-2 inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="mr-2 h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor">
+                      <path
+                        d="M4 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V8.414a1 1 0 00-.293-.707l-4.414-4.414A1 1 0 0013.586 3H4zm1 2h6.586l3 3H14v10H5V5z" />
+                    </svg>
+                    Descargar PDF
+                  </a>
+                </div>
+              </ng-container>
+
+              <!-- Caso por defecto para otros tipos de medios -->
+              <ng-container *ngSwitchDefault>
+                <img
+                  [src]="media.source_url"
+                  [alt]="media.alt_text"
+                  class="mb-4 h-40 w-full rounded-md object-cover"
+                  loading="lazy"
+                  onerror="this.onerror=null;this.src='assets/icons/image-placeholder.svg';" />
+              </ng-container>
+            </ng-container>
+
+            <!-- Información del medio -->
+            <div class="mt-2 text-center">
+              <h3 class="text-lg font-semibold text-gray-900 md:text-xl">{{ media.title.rendered }}</h3>
+              <p class="text-sm text-gray-500">Subido: {{ formatDate(media.date) }}</p>
+              <p class="text-sm text-gray-500">Tipo: {{ media.mime_type }}</p>
+              <p class="text-sm text-gray-500">Tamaño: {{ (media.media_details.filesize / 1024).toFixed(2) }} KB</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="mt-4 flex items-center justify-between">
-        <span class="text-sm text-gray-500">Tamaño: {{ document.size }}</span>
-        <button
-          class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600">
-          Descargar {{ document.extension }}
-        </button>
-      </div>
+      <!-- Template para No Hay Medios -->
+      <ng-template #noMedia>
+        <p class="text-center text-gray-500">No se encontraron medios.</p>
+      </ng-template>
     </div>
   </div>
 </div>

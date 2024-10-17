@@ -1,0 +1,10 @@
+/* Puedes agregar estilos personalizados aquí si es necesario */
+
+.inactive-container {
+  /* Ejemplo: Centrar contenido verticalmente */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}

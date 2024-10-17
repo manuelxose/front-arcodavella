@@ -1,0 +1,12 @@
+/* src/app/components/confirmation-dialog/confirmation-dialog.component.scss */
+
+.custom-dialog .mat-dialog-container {
+  @apply rounded-xl p-6 shadow-xl;
+}
+
+/* Media queries para mayor personalización en móviles */
+@media (max-width: 640px) {
+  .custom-dialog .mat-dialog-container {
+    @apply p-4;
+  }
+}

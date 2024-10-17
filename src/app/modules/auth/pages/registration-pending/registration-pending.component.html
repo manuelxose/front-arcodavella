@@ -1,0 +1,43 @@
+<!-- Formulario de registro en proceso -->
+<form class="mx-auto my-10 max-w-md space-y-6 rounded-lg bg-white p-8 shadow-md" (ngSubmit)="navigateToDashboard()">
+  <div class="text-center">
+    <h2 class="mb-2 text-3xl font-semibold text-foreground">Registro en Proceso</h2>
+    <p class="text-sm text-muted-foreground">
+      Tu solicitud de registro está siendo atendida. Te notificaremos una vez que tu cuenta esté activa.
+    </p>
+  </div>
+
+  <div class="space-y-4 text-left">
+    <div class="form__group">
+      <p class="text-md text-center text-muted-foreground">
+        Mientras tanto, puedes explorar nuestras
+        <a routerLink="/features" class="text-primary underline">características</a> o
+        <a routerLink="/contact" class="text-primary underline">contactar al soporte</a> si tienes alguna pregunta.
+      </p>
+    </div>
+  </div>
+
+  <div class="mb-4 flex flex-col space-y-3">
+    <!-- Botón para volver al inicio -->
+    <div>
+      <app-button full impact="bold" tone="primary" shape="rounded" size="medium" (click)="navigateToHome()">
+        Volver al Inicio
+      </app-button>
+    </div>
+
+    <!-- Botón para contactar al soporte -->
+    <div>
+      <app-button full impact="bold" tone="secondary" shape="rounded" size="medium" (click)="contactSupport()">
+        Contactar Soporte
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Opcional: Información adicional o enlaces útiles -->
+  <div class="flex items-center justify-center text-sm text-muted-foreground">
+    <p>¿Necesitas ayuda adicional?</p>
+    <app-button routerLink="/contact" impact="none" tone="primary" shape="rounded" size="small" class="ml-2">
+      Visitar Centro de Ayuda
+    </app-button>
+  </div>
+</form>

@@ -1,6 +1,5 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
-import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Member } from './model/member.model';
 import { FormsModule } from '@angular/forms';
 import { TableHeaderComponent } from './components/table-header/table-header.component';
@@ -12,20 +11,16 @@ import { UploadCsvModalComponent } from 'src/app/shared/components/upload-csv-mo
 import { DeleteConfirmationModalComponent } from 'src/app/shared/components/delete-confirmation-modal/delete-confirmation-modal.component';
 import { environment } from 'src/environments/environment';
 import { AddMemberModalComponent } from 'src/app/shared/components/add-member-modal/add-member-modal.component';
-
+import { AngularSvgIconModule, SvgLoader } from 'angular-svg-icon';
+import { APP_BASE_HREF, CommonModule } from '@angular/common';
+import { SvgIconRegistryService } from 'angular-svg-icon';
+import { ExcelService } from 'src/app/core/services/excel.service';
 @Component({
   selector: 'app-table',
-  standalone: true,
-  imports: [
-    AngularSvgIconModule,
-    FormsModule,
-    TableHeaderComponent,
-    TableFooterComponent,
-    TableRowComponent,
-    TableActionComponent,
-    UploadCsvModalComponent,
-    DeleteConfirmationModalComponent,
-    AddMemberModalComponent,
+
+  providers: [
+    { provide: APP_BASE_HREF, useValue: '/uikit/' },
+    SvgIconRegistryService, // Provide the service here
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
@@ -46,7 +41,7 @@ export class TableComponent implements OnInit {
   @ViewChild('deleteModal') deleteModal!: DeleteConfirmationModalComponent; // Modal de confirmación de eliminación
   selectedUsers: Member[] = []; // Usuarios seleccionados para eliminar
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private excelService: ExcelService) {
     this.fetchAllUsers(); // Cargar todos los usuarios al iniciar
   }
 
@@ -272,5 +267,37 @@ export class TableComponent implements OnInit {
         this.handleRequestError(error, 'Error adding new member');
       },
     });
+  }
+
+  /**
+   * Método para descargar la lista de usuarios en formato Excel.
+   */
+  downloadExcel() {
+    console.log('Descargar lista de miembros en formato Excel.');
+
+    if (!this.allUsers || this.allUsers.length === 0) {
+      toast.error('No hay datos disponibles para descargar.', { position: 'bottom-right' });
+      return;
+    }
+
+    // Definir las cabeceras para el Excel
+    const headers = ['Número de Socio', 'Nombre', 'DNI', 'Email', 'Número Actual', 'Observaciones', 'Estado'];
+
+    // Mapear los datos para el Excel
+    const dataForExcel = this.allUsers.map((member) => ({
+      'Número de Socio': member.memberNumber,
+      Nombre: member.name,
+      DNI: member.dni,
+      Email: member.email,
+      'Número Actual': member.memberNumber,
+      Observaciones: member.comments,
+      Estado: member.status,
+    }));
+
+    // Definir el nombre del archivo
+    const fileName = `Lista_Miembros_${new Date().toISOString().split('T')[0]}`; // Ejemplo: Lista_Miembros_2024-04-27
+
+    // Llamar al servicio para descargar el Excel
+    this.excelService.downloadExcel(dataForExcel, headers, fileName);
   }
 }

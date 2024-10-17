@@ -1,11 +1,15 @@
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 // Definimos la interfaz para los usuarios
-interface Usuario {
-  id: number;
-  nombre: string;
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  memberNumer?: string;
+  dni?: string;
 }
 
 @Component({
@@ -19,23 +23,23 @@ export class BusquedaUsuariosComponent {
   searchQuery = '';
 
   // Lista de usuarios simulada usando la interfaz Usuario
-  usuarios: Usuario[] = [
-    { id: 1, nombre: 'Juan Pérez' },
-    { id: 2, nombre: 'Ana Gómez' },
-    { id: 3, nombre: 'Luis Rodríguez' },
-    { id: 4, nombre: 'Carla Fernández' },
-    { id: 5, nombre: 'Miguel Sánchez' },
-    // Añadir más usuarios simulados
-  ];
+  usuarios: User[] = [];
 
   // Lista de usuarios seleccionados, con el tipo Usuario
-  selectedUsers: Usuario[] = [];
+  selectedUsers: User[] = [];
 
   // Output para enviar la lista de usuarios seleccionados al componente padre
-  @Output() usuariosSeleccionados = new EventEmitter<Usuario[]>();
+  @Output() usuariosSeleccionados = new EventEmitter<User[]>();
 
   // Lista de usuarios filtrados
-  filteredUsers: Usuario[] = [];
+  filteredUsers: User[] = [];
+
+  constructor(private readonly notificationSvc: NotificationService) {
+    this.notificationSvc.getAllUsers().subscribe((res) => {
+      this.usuarios = res.users;
+      console.log('la rs:', this.usuarios);
+    });
+  }
 
   // Este método actualiza la lista de usuarios filtrados conforme cambia la búsqueda
   onSearchQueryChange() {
@@ -44,15 +48,16 @@ export class BusquedaUsuariosComponent {
     } else {
       this.filteredUsers = this.usuarios.filter(
         (user) =>
-          user.nombre.toLowerCase().includes(this.searchQuery.toLowerCase()) && !this.selectedUsers.includes(user),
+          user.name.toLowerCase().includes(this.searchQuery.toLowerCase()) && !this.selectedUsers.includes(user),
       );
     }
   }
 
   // Añadir usuario a la lista de seleccionados y enviar al componente padre
-  addUser(user: Usuario) {
+  addUser(user: User) {
     if (!this.selectedUsers.includes(user)) {
       this.selectedUsers.push(user);
+      console.log(this.selectedUsers);
       this.usuariosSeleccionados.emit(this.selectedUsers); // Emitimos los usuarios seleccionados al componente padre
     }
     this.searchQuery = ''; // Limpiamos la búsqueda después de seleccionar
@@ -60,7 +65,7 @@ export class BusquedaUsuariosComponent {
   }
 
   // Eliminar un usuario de la lista seleccionada y actualizar el componente padre
-  removeUser(user: Usuario) {
+  removeUser(user: User) {
     this.selectedUsers = this.selectedUsers.filter((u) => u !== user);
     this.usuariosSeleccionados.emit(this.selectedUsers); // Emitimos los usuarios seleccionados actualizados
   }

@@ -1,0 +1,68 @@
+<div class="max-w-8xl mx-auto rounded-lg bg-white p-6 shadow-md">
+  <h3 class="mb-4 border-b pb-4 text-2xl font-semibold text-gray-800">🏡 Noticias Destacadas</h3>
+  <div class="relative">
+    <!-- Botón de Navegación Izquierda -->
+    <button
+      class="absolute left-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-3 text-gray-800 shadow-md transition-colors focus:outline-none hover:bg-gray-200"
+      (click)="scrollLeftFunc()"
+      aria-label="Desplazar hacia la izquierda">
+      <!-- Icono de Flecha Izquierda -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Carrusel de Propiedades -->
+    <div
+      #carousel
+      class="scrollbar-hide flex space-x-6 overflow-x-auto scroll-smooth py-4"
+      (wheel)="onWheelEvent($event)"
+      (mousedown)="onMouseDown($event)"
+      (mouseleave)="onMouseLeave($event)"
+      (mouseup)="onMouseUp($event)"
+      (mousemove)="onMouseMove($event)"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
+      (touchmove)="onTouchMove($event)">
+      <div *ngFor="let post of posts" class="w-80 flex-shrink-0">
+        <div
+          class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+          <img
+            class="h-48 w-full object-cover transition-transform duration-500 hover:scale-105"
+            *ngIf="post._embedded?.['wp:featuredmedia']?.[0]?.source_url"
+            [src]="post._embedded['wp:featuredmedia'][0].source_url"
+            [alt]="post._embedded['wp:featuredmedia'][0].alt_text"
+            (error)="post._embedded['wp:featuredmedia'][0].source_url = 'assets/icons/image-placeholder.svg'"
+            loading="lazy" />
+          <div class="flex flex-1 flex-col justify-between p-4">
+            <div>
+              <h4 class="line-clamp-2 text-lg font-semibold text-gray-800">{{ post.title.rendered }}</h4>
+              <p class="mt-2 line-clamp-3 text-gray-600">{{ post.descripcion }}</p>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-xl font-bold text-blue-600">{{ post.precio | currency : 'EUR' }}</span>
+              <a
+                [href]="post.link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="rounded-full bg-blue-600 px-4 py-2 text-white shadow-md transition-colors focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 hover:bg-blue-700">
+                Ver Detalles
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de Navegación Derecha -->
+    <button
+      class="absolute right-0 top-1/2 z-10 -translate-y-1/2 transform rounded-full bg-white p-3 text-gray-800 shadow-md transition-colors focus:outline-none hover:bg-gray-200"
+      (click)="scrollRightFunc()"
+      aria-label="Desplazar hacia la derecha">
+      <!-- Icono de Flecha Derecha -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+</div>

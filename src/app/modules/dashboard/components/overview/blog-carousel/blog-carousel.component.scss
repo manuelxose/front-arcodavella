@@ -1,0 +1,15 @@
+/* Ocultar la barra de desplazamiento */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE y Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Cambiar el cursor cuando se está arrastrando */
+.active {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}

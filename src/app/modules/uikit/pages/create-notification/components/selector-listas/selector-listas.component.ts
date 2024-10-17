@@ -1,5 +1,3 @@
-// src/app/selector-listas/selector-listas.component.ts
-
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, HostListener, ElementRef } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -9,6 +7,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NotificationService } from 'src/app/core/services/notification.service';
+
+interface Lista {
+  nombre: string;
+  destinatarios: number;
+  miembros: Miembro[];
+}
 
 @Component({
   selector: 'app-selector-listas',
@@ -34,50 +39,37 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   ],
 })
 export class SelectorListasComponent implements ControlValueAccessor {
-  listasSeleccionadas: string[] = [];
+  listasSeleccionadas: Lista[] = []; // Listas seleccionadas en el formato requerido
   dropdownOpen: boolean = false;
   isDisabled: boolean = false;
 
-  // Listas de ejemplo
-  listas: { nombre: string; destinatarios: number; miembros: Miembro[] }[] = [
-    {
-      nombre: 'Lista de Marketing',
-      destinatarios: 3,
-      miembros: [
-        { nombre: 'Juan Pérez', correo: 'juan.perez@example.com' },
-        { nombre: 'María López', correo: 'maria.lopez@example.com' },
-        { nombre: 'Carlos Sánchez', correo: 'carlos.sanchez@example.com' },
-      ],
-    },
-    {
-      nombre: 'Lista de Soporte',
-      destinatarios: 2,
-      miembros: [
-        { nombre: 'Ana Gómez', correo: 'ana.gomez@example.com' },
-        { nombre: 'Luis Fernández', correo: 'luis.fernandez@example.com' },
-      ],
-    },
-    {
-      nombre: 'Lista de Ventas',
-      destinatarios: 4,
-      miembros: [
-        { nombre: 'Pedro Martínez', correo: 'pedro.martinez@example.com' },
-        { nombre: 'Lucía Ruiz', correo: 'lucia.ruiz@example.com' },
-        { nombre: 'Sofía Díaz', correo: 'sofia.diaz@example.com' },
-        { nombre: 'Miguel Torres', correo: 'miguel.torres@example.com' },
-      ],
-    },
-  ];
+  listas: Lista[] = []; // Listas disponibles
 
-  constructor(private eRef: ElementRef, private dialog: MatDialog, private snackBar: MatSnackBar) {}
+  constructor(
+    private eRef: ElementRef,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private readonly notSvc: NotificationService,
+  ) {
+    this.loadLists();
+  }
+
+  private loadLists(): void {
+    this.notSvc.getAllMembers().subscribe((res) => {
+      // Load lists into the component in the exact required format
+      this.listas.push({
+        nombre: 'Socios Arcodavella',
+        destinatarios: res.members.length,
+        miembros: res.members,
+      });
+
+      console.log('Loaded lists:', res);
+    });
+  }
 
   // Implementación de ControlValueAccessor
-  writeValue(value: string[]): void {
-    if (value) {
-      this.listasSeleccionadas = value;
-    } else {
-      this.listasSeleccionadas = [];
-    }
+  writeValue(value: Lista[]): void {
+    this.listasSeleccionadas = value || [];
   }
 
   registerOnChange(fn: any): void {
@@ -92,29 +84,23 @@ export class SelectorListasComponent implements ControlValueAccessor {
     this.isDisabled = isDisabled;
   }
 
-  onChange = (value: any) => {};
+  onChange = (value: Lista[]) => {};
   onTouched = () => {};
 
-  // Método para alternar el dropdown
   toggleDropdown(): void {
     if (this.isDisabled) return;
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  // Método para manejar clics fuera del componente y cerrar el dropdown
   @HostListener('document:click', ['$event'])
-  clickout(event: Event) {
+  clickout(event: Event): void {
     if (this.dropdownOpen && !this.eRef.nativeElement.contains(event.target)) {
       this.dropdownOpen = false;
       this.onTouched();
     }
   }
 
-  /**
-   * Abre el modal de edición para una lista específica.
-   * @param lista La lista que se va a editar.
-   */
-  abrirModal(lista: { nombre: string; destinatarios: number; miembros: Miembro[] } | undefined): void {
+  abrirModal(lista: Lista): void {
     if (!lista) {
       this.snackBar.open('La lista seleccionada no existe.', 'Cerrar', {
         duration: 3000,
@@ -123,48 +109,46 @@ export class SelectorListasComponent implements ControlValueAccessor {
     }
 
     const dialogRef = this.dialog.open(ModalEdicionComponent, {
-      width: '900px', // Aumenta el ancho según tus necesidades
-      maxWidth: '95vw', // Opcional: limita el ancho máximo al 95% del viewport
+      width: '900px',
+      maxWidth: '95vw',
       data: { miembros: lista.miembros },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Actualizar los miembros de la lista con los datos modificados del modal
         lista.miembros = result;
         lista.destinatarios = lista.miembros.length;
-        this.onChange(this.listasSeleccionadas); // Propagar los cambios
+        this.propagateChange();
       }
     });
   }
-  /**
-   * Obtiene una lista por su nombre.
-   * @param nombre El nombre de la lista.
-   * @returns La lista correspondiente o undefined si no se encuentra.
-   */
-  getListaPorNombre(nombre: string): { nombre: string; destinatarios: number; miembros: Miembro[] } | undefined {
-    return this.listas.find((lista) => lista.nombre === nombre);
-  }
 
-  /**
-   * Método para manejar la selección de listas de manera inmutable.
-   * @param nombre El nombre de la lista.
-   */
-  toggleListaSeleccionada(nombre: string): void {
-    if (this.listasSeleccionadas.includes(nombre)) {
-      this.listasSeleccionadas = this.listasSeleccionadas.filter((l) => l !== nombre);
+  toggleListaSeleccionada(lista: Lista): void {
+    if (this.isListaSeleccionada(lista)) {
+      this.eliminarListaSeleccionada(lista);
     } else {
-      this.listasSeleccionadas = [...this.listasSeleccionadas, nombre];
+      this.agregarListaSeleccionada(lista);
     }
-    this.onChange(this.listasSeleccionadas);
+    this.propagateChange();
   }
 
-  /**
-   * Elimina una lista de las listas seleccionadas.
-   * @param nombre El nombre de la lista a eliminar.
-   */
-  eliminarListaSeleccionada(nombre: string): void {
-    this.listasSeleccionadas = this.listasSeleccionadas.filter((l) => l !== nombre);
+  private isListaSeleccionada(lista: Lista): boolean {
+    return this.listasSeleccionadas.some((l) => l.nombre === lista.nombre);
+  }
+
+  private agregarListaSeleccionada(lista: Lista): void {
+    // Directly add the list in the correct format without altering its properties
+    this.listasSeleccionadas = [...this.listasSeleccionadas, lista];
+  }
+
+  eliminarListaSeleccionada(lista: Lista): void {
+    // Remove the list from the selected lists, keeping the format intact
+    this.listasSeleccionadas = this.listasSeleccionadas.filter((l) => l.nombre !== lista.nombre);
+    this.propagateChange();
+  }
+
+  private propagateChange(): void {
+    // Pass the lists back to the parent in the exact required format
     this.onChange(this.listasSeleccionadas);
   }
 }

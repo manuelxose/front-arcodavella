@@ -5,6 +5,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AuthService } from '../../../../core/services/auth.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-sign-in',
@@ -47,6 +48,7 @@ export class SignInComponent implements OnInit {
 
     if (this.form.invalid) {
       console.log('Form is invalid');
+      toast.error('Please fill in all required fields correctly.'); // Notificación de error si el formulario es inválido
       return;
     }
 
@@ -55,12 +57,13 @@ export class SignInComponent implements OnInit {
     // Autenticación
     this.authService.login(email, password).subscribe({
       next: (user) => {
+        toast.success('Login successful!'); // Notificación de éxito
         console.log('Login successful, navigating to home');
-        this._router.navigate(['/dashboard/nfts']); // Redirige a la ruta protegida después del login
+        this._router.navigate(['/dashboard/overview']); // Redirige a la ruta protegida después del login
       },
       error: (error) => {
+        toast.error(error?.message || 'Login failed.'); // Notificación de error en caso de fallo
         console.error('Login failed', error);
-        // Manejo de errores aquí
       },
     });
   }

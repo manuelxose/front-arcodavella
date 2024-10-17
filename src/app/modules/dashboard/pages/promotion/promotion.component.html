@@ -1,0 +1,526 @@
+<div class="bg-gray-100">
+  <!-- Banner Principal -->
+  <div class="relative mx-4 overflow-hidden rounded-lg sm:mx-0">
+    <div class="h-72 w-full overflow-hidden rounded-lg sm:h-96">
+      <img [src]="promotion.mainImage" alt="Banner Principal" class="h-full w-full object-cover object-center" />
+    </div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 px-4 text-center">
+      <h1 class="mb-4 animate-fade-in text-2xl font-extrabold text-white sm:text-4xl md:text-5xl">
+        {{ promotion.title }}
+      </h1>
+      <h2 class="mb-6 animate-fade-in-delay text-lg font-semibold text-white sm:text-xl md:text-2xl">
+        {{ promotion.subtitle }}
+      </h2>
+      <p class="mb-8 max-w-xs text-sm text-white sm:max-w-md sm:text-base md:max-w-3xl md:text-lg">
+        Arco da Vella presenta un proyecto único en el PAU de Navia, diseñado para aquellos que buscan más que una
+        vivienda: un hogar en una comunidad vibrante y sostenible. Únete a nosotros y descubre cómo la vida en comunidad
+        puede transformar tu experiencia de vivienda.
+      </p>
+      <a
+        href="#contact"
+        class="bg-custom rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg">
+        Solicita Información
+      </a>
+    </div>
+  </div>
+
+  <!-- Divisor estilizado -->
+  <div class="my-12">
+    <hr class="border-custom mx-auto w-1/2 border-t-2" />
+  </div>
+
+  <!-- Sobre Arco da Vella -->
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <h2 class="section-title text-center">Tu Compañero Ideal en Vivienda Cooperativa</h2>
+    <p class="section-content mb-12 text-center">
+      En <span class="important-text">Arco da Vella</span>, creemos en el poder de la comunidad y en la importancia de
+      ofrecer viviendas de calidad que sean accesibles para todos. Nuestra misión es facilitar el acceso a viviendas
+      sostenibles, promoviendo la colaboración y el apoyo mutuo entre nuestros socios. Al unirte a nuestra cooperativa,
+      no solo estás adquiriendo una vivienda, sino que también estás formando parte de una iniciativa que valora la
+      sostenibilidad, la inclusión y el bienestar comunitario.
+    </p>
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <!-- Icono 1 -->
+      <div class="flex flex-col items-center text-center">
+        <svg class="text-highlight mb-4 h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+          <!-- Icono de casa -->
+          <path d="M12 3l9.5 9.5-1.5 1.5L18 12.5V20h-5v-5H11v5H6v-7.5L4 14l-1.5-1.5L12 3z" />
+        </svg>
+        <h3 class="mb-2 text-xl font-semibold text-gray-800">Obra Nueva</h3>
+        <p class="text-gray-600">
+          Proyectos modernos y sostenibles construidos desde cero, utilizando las últimas tecnologías en construcción.
+        </p>
+      </div>
+      <!-- Icono 2 -->
+      <div class="flex flex-col items-center text-center">
+        <svg class="text-highlight mb-4 h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+          <!-- Icono de escudo -->
+          <path d="M12 1l9 4v6c0 5.25-3.75 9.92-9 11-5.25-1.08-9-5.75-9-11V5l9-4z" />
+        </svg>
+        <h3 class="mb-2 text-xl font-semibold text-gray-800">Seguros y Garantías</h3>
+        <p class="text-gray-600">
+          Protección total para tu inversión con seguros y garantías que respaldan cada etapa del proyecto.
+        </p>
+      </div>
+      <!-- Icono 3 -->
+      <div class="flex flex-col items-center text-center">
+        <svg class="text-highlight mb-4 h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+          <!-- Icono de hoja -->
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+        </svg>
+        <h3 class="mb-2 text-xl font-semibold text-gray-800">Construcción Sostenible</h3>
+        <p class="text-gray-600">
+          Comprometidos con el medio ambiente, utilizamos prácticas y materiales sostenibles en todas nuestras
+          construcciones.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divisor estilizado -->
+  <div class="my-12">
+    <hr class="border-custom mx-auto w-1/2 border-t-2" />
+  </div>
+
+  <!-- Información Detallada -->
+  <div class="bg-dark-blue py-12 sm:py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Sección 1 -->
+      <div class="mb-12 flex flex-col items-center md:flex-row">
+        <!-- Imagen 1 -->
+        <div class="mb-6 w-full md:mb-0 md:w-1/2">
+          <img
+            src="https://picsum.photos/600/400"
+            alt="Un Hogar para el Mañana"
+            class="h-auto w-full rounded-lg object-cover shadow-lg" />
+        </div>
+        <!-- Texto 1 -->
+        <div class="w-full md:w-1/2 md:pl-8">
+          <h3 class="section-subtitle mb-4 text-2xl text-white sm:text-3xl">Un Hogar para el Mañana</h3>
+          <p class="section-content-blue mb-4 text-sm text-white sm:text-base md:text-lg">
+            La <span class="text-highlight">Promoción PAU de Navia</span> es el corazón de nuestra oferta en Arco da
+            Vella. Aquí, cada vivienda es diseñada pensando en el futuro, ofreciendo espacios que son tanto funcionales
+            como inspiradores. Nuestro proyecto no solo busca cumplir con las expectativas actuales de confort y diseño,
+            sino que también se anticipa a las necesidades futuras de nuestros socios, integrando tecnologías y
+            soluciones que facilitan la vida diaria. Creemos en crear hogares que evolucionen contigo, adaptándose a tus
+            necesidades a lo largo del tiempo.
+          </p>
+          <p class="section-content-blue text-sm text-white sm:text-base md:text-lg">
+            Además, promovemos un estilo de vida comunitario, donde los espacios comunes y las áreas verdes fomentan la
+            interacción y el sentido de pertenencia. Nuestra visión es construir no solo viviendas, sino también una
+            comunidad sólida y unida.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sección 2 -->
+      <div class="mb-12 flex flex-col items-center md:flex-row-reverse">
+        <!-- Imagen 2 -->
+        <div class="mb-6 w-full md:mb-0 md:w-1/2">
+          <img
+            src="https://picsum.photos/600/400"
+            alt="Soluciones Prefabricadas"
+            class="h-auto w-full rounded-lg object-cover shadow-lg" />
+        </div>
+        <!-- Texto 2 -->
+        <div class="w-full md:w-1/2 md:pr-8">
+          <h3 class="section-subtitle mb-4 text-2xl text-white sm:text-3xl">
+            Soluciones Prefabricadas: Innovación en Construcción
+          </h3>
+          <p class="section-content-blue text-sm text-white sm:text-base md:text-lg">
+            Descubre nuestras soluciones prefabricadas, donde la eficiencia se encuentra con la personalización. Estas
+            viviendas están construidas con precisión y cuidado, asegurando una calidad constante y una reducción
+            significativa en los tiempos de construcción. Además, ofrecen una flexibilidad increíble, permitiendo a los
+            socios personalizar sus hogares según sus gustos y necesidades, sin sacrificar la eficiencia y
+            sostenibilidad. Cada módulo es diseñado para maximizar el espacio y la funcionalidad, adaptándose a
+            diferentes estilos de vida.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sección 3 -->
+      <div class="mb-12 flex flex-col items-center md:flex-row">
+        <!-- Imagen 3 -->
+        <div class="mb-6 w-full md:mb-0 md:w-1/2">
+          <img
+            src="https://picsum.photos/600/400"
+            alt="Calidad de Diseño"
+            class="h-auto w-full rounded-lg object-cover shadow-lg" />
+        </div>
+        <!-- Texto 3 -->
+        <div class="w-full md:w-1/2 md:pl-8">
+          <h3 class="section-subtitle mb-4 text-2xl text-white sm:text-3xl">Calidad de Diseño</h3>
+          <p class="section-content-blue mb-4 text-sm text-white sm:text-base md:text-lg">
+            La calidad del diseño es primordial en <span class="text-highlight">Arco da Vella</span>. Cada elemento,
+            desde la elección de materiales hasta la disposición de los espacios, está pensado para crear un ambiente
+            que no solo sea estéticamente agradable, sino que también promueva la funcionalidad y el bienestar. Nuestros
+            arquitectos y diseñadores trabajan en estrecha colaboración con los socios para garantizar que cada vivienda
+            refleje sus necesidades y aspiraciones. Creemos que un buen diseño mejora la calidad de vida y estamos
+            comprometidos en ofrecer lo mejor.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sección 4 -->
+      <div class="mb-12 flex flex-col items-center md:flex-row-reverse">
+        <!-- Imagen 4 -->
+        <div class="mb-6 w-full md:mb-0 md:w-1/2">
+          <img
+            src="https://picsum.photos/600/400"
+            alt="Materiales de Alta Gama"
+            class="h-auto w-full rounded-lg object-cover shadow-lg" />
+        </div>
+        <!-- Texto 4 -->
+        <div class="w-full md:w-1/2 md:pr-8">
+          <h3 class="section-subtitle mb-4 text-2xl text-white sm:text-3xl">Materiales de Alta Gama</h3>
+          <p class="section-content-blue text-sm text-white sm:text-base md:text-lg">
+            Nos comprometemos a utilizar solo materiales de alta gama en nuestras construcciones. Esto garantiza no solo
+            la durabilidad y la seguridad de tu hogar, sino que también asegura que cada vivienda sea un espacio donde
+            la calidad se siente en cada rincón. Desde suelos y revestimientos hasta sistemas de climatización y
+            aislamiento, cada componente es seleccionado por su rendimiento y sostenibilidad. Buscamos crear hogares que
+            sean eficientes energéticamente y que proporcionen el máximo confort a nuestros socios.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divisor estilizado -->
+  <div class="my-12">
+    <hr class="border-custom mx-auto w-1/2 border-t-2" />
+  </div>
+
+  <!-- Galería de imágenes con imágenes redondeadas -->
+  <div class="py-16">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-8">
+      <div
+        *ngFor="let image of promotion.images"
+        class="transform overflow-hidden rounded-full shadow-lg transition-transform duration-300 hover:scale-105">
+        <img [src]="image" alt="Imagen de la promoción" class="h-64 w-full object-cover" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Características y Amenidades -->
+  <div class="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h3 class="section-title text-center">Características y Amenidades</h3>
+    <div class="mt-8 grid grid-cols-1 gap-12 md:grid-cols-2">
+      <!-- Características -->
+      <div>
+        <h4 class="section-subtitle">Características</h4>
+        <ul class="mt-4 space-y-4">
+          <li *ngFor="let feature of promotion.features" class="flex items-start">
+            <svg class="text-highlight mr-3 h-6 w-6 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <!-- Icono de check -->
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+            </svg>
+            <span class="text-gray-700">{{ feature }}</span>
+          </li>
+        </ul>
+      </div>
+      <!-- Amenidades -->
+      <div>
+        <h4 class="section-subtitle">Amenidades</h4>
+        <ul class="mt-4 space-y-4">
+          <li *ngFor="let amenity of promotion.amenities" class="flex items-start">
+            <svg class="text-highlight mr-3 h-6 w-6 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <!-- Icono de estrella -->
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span class="text-gray-700">{{ amenity }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divisor estilizado -->
+  <div class="my-12">
+    <hr class="border-custom mx-auto w-1/2 border-t-2" />
+  </div>
+
+  <!-- Tipos de Viviendas -->
+  <div class="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h3 class="section-title text-center text-3xl font-bold text-gray-800">Tipos de Viviendas</h3>
+    <p class="section-content mb-12 text-center text-lg text-gray-600">
+      En <span class="important-text font-semibold text-indigo-600">Arco da Vella</span>, ofrecemos una variedad de
+      opciones de viviendas para adaptarnos a las necesidades y preferencias de nuestros socios. Desde apartamentos
+      espaciosos hasta chalets adosados, diseñados para brindar el máximo confort y funcionalidad.
+    </p>
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <!-- Tarjeta 1: Apartamento de 2 habitaciones -->
+      <div
+        class="flex flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 hover:shadow-2xl">
+        <!-- Imagen de la Vivienda -->
+        <div class="relative w-full">
+          <img
+            class="h-56 w-full object-cover"
+            src="https://picsum.photos/600/400?random=1"
+            alt="Apartamento de 2 habitaciones"
+            loading="lazy" />
+          <!-- Etiqueta de Oferta -->
+          <span class="absolute left-4 top-4 rounded bg-red-500 px-2 py-1 text-xs font-semibold text-white">
+            ¡Nuevo!
+          </span>
+        </div>
+        <!-- Contenido de la Vivienda -->
+        <div class="flex flex-col justify-between p-6">
+          <div>
+            <h4 class="mb-2 text-2xl font-bold text-gray-800">Apartamento de 2 habitaciones</h4>
+            <p class="mb-4 text-gray-600">
+              Ideal para familias pequeñas o parejas que buscan comodidad y funcionalidad en un espacio moderno.
+            </p>
+            <!-- Características -->
+            <ul class="mb-6 space-y-3">
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <!-- Icono de Metro de habitacion -->
+                  <path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm1-4a1 1 0 00-1 1v3h2V1a1 1 0 00-1-1z" />
+                </svg>
+                <span class="text-gray-700">75 m²</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Baño -->
+                  <path d="M6 10V6a4 4 0 014-4h4a4 4 0 014 4v4H6zm12 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6h12z" />
+                </svg>
+                <span class="text-gray-700">1 baño</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Cocina -->
+                  <path d="M5 3a2 2 0 00-2 2v10h18V5a2 2 0 00-2-2H5zm0 14v2a2 2 0 002 2h10a2 2 0 002-2v-2H5z" />
+                </svg>
+                <span class="text-gray-700">Cocina equipada</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Terraza -->
+                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v2h2v-2zm0-4h-2v4h2v-4z" />
+                </svg>
+                <span class="text-gray-700">Terraza</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Botón de Acción -->
+          <a
+            href="#"
+            class="mt-auto inline-block w-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-center font-semibold text-white shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+            Más Información
+          </a>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Apartamento de 3 habitaciones -->
+      <div
+        class="flex flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 hover:shadow-2xl">
+        <!-- Imagen de la Vivienda -->
+        <div class="relative w-full">
+          <img
+            class="h-56 w-full object-cover"
+            src="https://picsum.photos/600/400?random=2"
+            alt="Apartamento de 3 habitaciones"
+            loading="lazy" />
+          <!-- Etiqueta de Oferta -->
+          <span class="absolute left-4 top-4 rounded bg-green-500 px-2 py-1 text-xs font-semibold text-white">
+            Destacado
+          </span>
+        </div>
+        <!-- Contenido de la Vivienda -->
+        <div class="flex flex-col justify-between p-6">
+          <div>
+            <h4 class="mb-2 text-2xl font-bold text-gray-800">Apartamento de 3 habitaciones</h4>
+            <p class="mb-4 text-gray-600">
+              Perfecto para familias que buscan más espacio y comodidades adicionales en un entorno moderno.
+            </p>
+            <!-- Características -->
+            <ul class="mb-6 space-y-3">
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <!-- Icono de Metro de habitacion -->
+                  <path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm1-4a1 1 0 00-1 1v3h2V1a1 1 0 00-1-1z" />
+                </svg>
+                <span class="text-gray-700">100 m²</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Baño -->
+                  <path d="M6 10V6a4 4 0 014-4h4a4 4 0 014 4v4H6zm12 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6h12z" />
+                </svg>
+                <span class="text-gray-700">2 baños</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Cocina -->
+                  <path d="M5 3a2 2 0 00-2 2v10h18V5a2 2 0 00-2-2H5zm0 14v2a2 2 0 002 2h10a2 2 0 002-2v-2H5z" />
+                </svg>
+                <span class="text-gray-700">Cocina equipada</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Balcón -->
+                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v2h2v-2zm0-4h-2v4h2v-4z" />
+                </svg>
+                <span class="text-gray-700">Balcón amplio</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Botón de Acción -->
+          <a
+            href="#"
+            class="mt-auto inline-block w-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-center font-semibold text-white shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+            Más Información
+          </a>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3: Chalets Adosados -->
+      <div
+        class="flex flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-transform hover:scale-105 hover:shadow-2xl">
+        <!-- Imagen de la Vivienda -->
+        <div class="relative w-full">
+          <img
+            class="h-56 w-full object-cover"
+            src="https://picsum.photos/600/400?random=3"
+            alt="Chalets Adosados"
+            loading="lazy" />
+          <!-- Etiqueta de Oferta -->
+          <span class="absolute left-4 top-4 rounded bg-blue-500 px-2 py-1 text-xs font-semibold text-white">
+            Exclusivo
+          </span>
+        </div>
+        <!-- Contenido de la Vivienda -->
+        <div class="flex flex-col justify-between p-6">
+          <div>
+            <h4 class="mb-2 text-2xl font-bold text-gray-800">Chalets Adosados</h4>
+            <p class="mb-4 text-gray-600">
+              Espaciosos y modernos chalets adosados, perfectos para quienes buscan un hogar con amplio espacio y
+              privacidad.
+            </p>
+            <!-- Características -->
+            <ul class="mb-6 space-y-3">
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <!-- Icono de Metro de habitacion -->
+                  <path d="M9 12h2v2H9v-2zm0-8h2v6H9V4zm1-4a1 1 0 00-1 1v3h2V1a1 1 0 00-1-1z" />
+                </svg>
+                <span class="text-gray-700">Desde 150 m²</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Baño -->
+                  <path d="M6 10V6a4 4 0 014-4h4a4 4 0 014 4v4H6zm12 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2v-6h12z" />
+                </svg>
+                <span class="text-gray-700">3+ baños</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Cocina -->
+                  <path d="M5 3a2 2 0 00-2 2v10h18V5a2 2 0 00-2-2H5zm0 14v2a2 2 0 002 2h10a2 2 0 002-2v-2H5z" />
+                </svg>
+                <span class="text-gray-700">Cocina de diseño</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                  <!-- Icono de Jardín -->
+                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v2h2v-2zm0-4h-2v4h2v-4z" />
+                </svg>
+                <span class="text-gray-700">Jardín privado</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Botón de Acción -->
+          <a
+            href="#"
+            class="mt-auto inline-block w-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-center font-semibold text-white shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+            Más Información
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Divisor estilizado -->
+  <div class="my-12">
+    <hr class="border-custom mx-auto w-1/2 border-t-2" />
+  </div>
+
+  <!-- Carrusel de Noticias -->
+  <div class="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h3 class="section-title text-center">Últimas Noticias</h3>
+    <p class="section-content mb-12 text-center">
+      Mantente informado sobre las últimas novedades y avances en nuestro proyecto y en el mundo de las cooperativas de
+      viviendas.
+    </p>
+    <app-blog-carousel></app-blog-carousel>
+  </div>
+
+  <!-- Divisor estilizado -->
+  <div class="my-12">
+    <hr class="border-custom mx-auto w-1/2 border-t-2" />
+  </div>
+
+  <!-- Progreso de Construcción -->
+  <div class="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h3 class="section-title text-center">Progreso de Construcción</h3>
+    <p class="section-content mb-12 text-center">
+      Mantenemos a nuestros socios informados en cada etapa del proceso. A continuación, se muestra el progreso actual
+      de la construcción de la <span class="important-text">Promoción PAU de Navia</span>.
+    </p>
+    <div class="space-y-6">
+      <div *ngFor="let progress of promotion.constructionProgress">
+        <h4 class="mb-2 text-xl font-semibold text-gray-800">{{ progress.stage }}</h4>
+        <div class="h-4 w-full rounded-full bg-gray-200">
+          <div class="bg-highlight h-4 rounded-full" [style.width.%]="progress.completion"></div>
+        </div>
+        <p class="mt-1 text-gray-600">{{ progress.completion }}% completado</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonios -->
+  <div class="mt-16 bg-blue-50 py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h3 class="section-title text-center">Hablan de Nosotros</h3>
+      <p class="section-content mb-12 text-center">
+        En <span class="important-text">Arco da Vella</span>, estamos comprometidos con la creación de viviendas
+        sostenibles y asequibles. Pero no tienes que tomar solo nuestra palabra; mira lo que otros dicen sobre nosotros:
+      </p>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div *ngFor="let testimonial of promotion.testimonials" class="rounded-lg bg-white p-6 shadow-lg">
+          <h4 class="mb-2 text-xl font-semibold text-gray-800">{{ testimonial.name }}</h4>
+          <p class="mb-4 text-sm text-gray-500">{{ testimonial.source }}</p>
+          <p class="italic text-gray-700">"{{ testimonial.feedback }}"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preguntas Frecuentes -->
+  <div class="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8" id="faqs">
+    <h3 class="section-title text-center">Preguntas Frecuentes</h3>
+    <div class="mt-8 space-y-8">
+      <div *ngFor="let faq of promotion.faqs" class="rounded-lg bg-white p-6 shadow">
+        <h4 class="mb-2 text-xl font-semibold text-gray-800">{{ faq.question }}</h4>
+        <p class="text-gray-700">{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contacto -->
+  <div class="bg-custom mt-16 py-16 text-white" id="contact">
+    <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+      <h3 class="mb-6 text-3xl font-bold">Hablemos sobre tu futuro hogar</h3>
+      <p class="mb-8 text-lg">
+        En <span class="important-text">Arco da Vella</span>, cada conversación es un paso hacia la casa de tus sueños.
+        Si tienes preguntas o necesitas orientación, estamos aquí para escucharte y asesorarte. Solicita una consulta y
+        comencemos a dar forma a tu proyecto habitacional en Galicia.
+      </p>
+      <div class="flex flex-col items-center justify-center space-y-4 md:flex-row md:space-x-6 md:space-y-0">
+        <a href="tel:{{ promotion.contact.phone }}" class="btn-custom">Llámanos</a>
+        <a href="mailto:{{ promotion.contact.email }}" class="btn-custom">Envíanos un Email</a>
+        <a href="#contact-form" class="btn-custom">Pide Cita</a>
+      </div>
+    </div>
+  </div>
+</div>

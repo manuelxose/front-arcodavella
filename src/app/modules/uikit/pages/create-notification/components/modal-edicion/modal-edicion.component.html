@@ -1,11 +1,9 @@
-<!-- src/app/modal-edicion/modal-edicion.component.html -->
-
-<div class="w-full max-w-6xl rounded-2xl bg-white p-8 shadow-2xl">
+<div class="h-[90vh] w-full max-w-6xl rounded-2xl bg-white p-8 shadow-2xl">
   <!-- Título del Modal -->
-  <h2 mat-dialog-title class="mb-6 text-center text-2xl font-semibold text-gray-800">Editar Miembros de la Lista</h2>
+  <h2 mat-dialog-title class="mb-6 text-center text-3xl font-semibold text-gray-800">Editar Miembros de la Lista</h2>
 
   <!-- Contenido del Modal -->
-  <div mat-dialog-content>
+  <div mat-dialog-content class="overflow-hidden">
     <!-- Buscador con Icono de Lupa -->
     <div class="relative mb-6">
       <input
@@ -24,36 +22,9 @@
       </span>
     </div>
 
-    <!-- Botones de Borrado -->
-    <div class="mb-4 flex justify-end space-x-4">
-      <button
-        mat-button
-        color="warn"
-        (click)="eliminarTodos()"
-        [disabled]="!filteredData.length"
-        class="flex items-center rounded-md bg-red-600 px-4 py-2 text-white transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-700">
-        <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            d="M9 2a1 1 0 00-1 1v1H5.5A1.5 1.5 0 004 5.5V7h12V5.5A1.5 1.5 0 0014.5 4H11V3a1 1 0 00-1-1H9zM4 8v8.5A1.5 1.5 0 005.5 18h9A1.5 1.5 0 0016 16.5V8H4z" />
-        </svg>
-        Eliminar Todos
-      </button>
-      <button
-        mat-button
-        color="warn"
-        (click)="eliminarSeleccionados()"
-        [disabled]="!seleccionados.length"
-        class="flex items-center rounded-md bg-red-500 px-4 py-2 text-white transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-600">
-        <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M6 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" />
-        </svg>
-        Eliminar Seleccionados
-      </button>
-    </div>
-
-    <!-- Tabla de Miembros -->
-    <div class="max-h-96 overflow-x-auto overflow-y-auto">
-      <table mat-table [dataSource]="filteredData" matSort class="w-full min-w-full table-auto text-left">
+    <!-- Tabla de Miembros con Scroll -->
+    <div class="max-h-[60vh] overflow-x-auto">
+      <table mat-table [dataSource]="paginatedData" matSort class="w-full min-w-full table-auto text-left">
         <!-- Columna de Selección -->
         <ng-container matColumnDef="seleccion">
           <th mat-header-cell *matHeaderCellDef class="bg-gray-100 px-4 py-2">
@@ -83,7 +54,12 @@
             Nombre
           </th>
           <td mat-cell *matCellDef="let elemento" class="px-4 py-2 text-left text-base text-gray-800">
-            {{ elemento.nombre }}
+            <ng-container *ngIf="!elemento.editing; else editNombre">
+              {{ elemento.name }}
+            </ng-container>
+            <ng-template #editNombre>
+              <input type="text" [(ngModel)]="elemento.name" class="w-full rounded-md border p-1" />
+            </ng-template>
           </td>
         </ng-container>
 
@@ -97,7 +73,12 @@
             Correo
           </th>
           <td mat-cell *matCellDef="let elemento" class="px-4 py-2 text-left text-base text-gray-800">
-            {{ elemento.correo }}
+            <ng-container *ngIf="!elemento.editing; else editCorreo">
+              {{ elemento.email }}
+            </ng-container>
+            <ng-template #editCorreo>
+              <input type="text" [(ngModel)]="elemento.email" class="w-full rounded-md border p-1" />
+            </ng-template>
           </td>
         </ng-container>
 
@@ -110,22 +91,38 @@
             Acciones
           </th>
           <td mat-cell *matCellDef="let elemento" class="px-4 py-2 text-left">
-            <button
-              mat-icon-button
-              color="primary"
-              (click)="editarMiembro(elemento)"
-              matTooltip="Editar"
-              class="text-xl text-blue-500 transition duration-200 hover:text-blue-600">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="eliminarMiembro(elemento)"
-              matTooltip="Eliminar"
-              class="text-xl text-red-500 transition duration-200 hover:text-red-600">
-              <mat-icon>delete</mat-icon>
-            </button>
+            <ng-container *ngIf="!elemento.editing">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="enableEdit(elemento)"
+                matTooltip="Editar"
+                class="text-xl text-blue-500 transition duration-200 hover:text-blue-600">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="eliminarMiembro(elemento)"
+                matTooltip="Eliminar"
+                class="text-xl text-red-500 transition duration-200 hover:text-red-600">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="elemento.editing">
+              <button
+                mat-icon-button
+                (click)="saveEdit(elemento)"
+                class="text-green-500 transition duration-200 hover:text-green-600">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                (click)="cancelEdit(elemento)"
+                class="text-red-500 transition duration-200 hover:text-red-600">
+                <mat-icon>close</mat-icon>
+              </button>
+            </ng-container>
           </td>
         </ng-container>
 
@@ -139,6 +136,10 @@
         </tr>
       </table>
     </div>
+
+    <!-- Paginación -->
+    <mat-paginator [length]="totalMembers" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
   </div>
 
   <!-- Acciones del Modal -->

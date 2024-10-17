@@ -1,0 +1,74 @@
+/* Estilos generales */
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f3f3f3; /* Color de fondo similar a Windows 11 */
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.action-bar-left,
+.action-bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.list-type-selector {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 14px;
+  color: #333;
+}
+
+.list-type-selector:focus {
+  border-color: #0067c0; /* Color de enfoque similar a Windows 11 */
+  outline: none;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: #0067c0;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0051a3;
+}
+
+.btn-danger {
+  background-color: #d13438;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #a5282c;
+}
+
+.btn-success {
+  background-color: #107c10;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #0e6a0e;
+}
+
+/* Estilos adicionales para botones */
+.btn i {
+  margin-right: 8px;
+}

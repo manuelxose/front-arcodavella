@@ -1,0 +1,11 @@
+<nav class="flex items-center rounded-md bg-white px-4 py-2 shadow-sm">
+  <ng-container *ngFor="let carpeta of path; let i = index">
+    <button
+      (click)="navigateTo(i)"
+      class="flex items-center space-x-1 text-sm font-medium text-gray-700 focus:outline-none hover:text-blue-600">
+      <mat-icon *ngIf="i === 0" class="text-base">home</mat-icon>
+      <span>{{ carpeta.nombre }}</span>
+    </button>
+    <mat-icon *ngIf="i < path.length - 1" class="mx-2 text-sm text-gray-400">chevron_right</mat-icon>
+  </ng-container>
+</nav>

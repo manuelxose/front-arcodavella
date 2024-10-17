@@ -1,0 +1,42 @@
+<!-- Formulario de cuenta pendiente de activación -->
+<form class="mx-auto my-10 max-w-md space-y-6 rounded-lg bg-white p-8 shadow-md" (ngSubmit)="logout()">
+  <div class="text-center">
+    <h2 class="mb-2 text-3xl font-semibold text-foreground text-gray-700">Cuenta Pendiente de Activación</h2>
+    <p class="text-sm text-muted-foreground">
+      Tu cuenta está actualmente pendiente de activación. Te enviaremos un correo electrónico cuando tu cuenta esté
+      activa.
+    </p>
+  </div>
+
+  <div class="space-y-4 text-left">
+    <div class="form__group">
+      <p class="text-md text-center text-muted-foreground">
+        Si tienes alguna pregunta o inquietud, puedes cerrar sesión o ponerte en contacto con el equipo de soporte.
+      </p>
+    </div>
+  </div>
+
+  <div class="mb-4 flex flex-col space-y-3">
+    <!-- Botón para contactar al soporte -->
+    <div>
+      <app-button full impact="bold" tone="primary" shape="rounded" size="medium" (click)="contactSupport()">
+        Contactar Soporte
+      </app-button>
+    </div>
+
+    <!-- Botón para cerrar sesión -->
+    <div>
+      <app-button full impact="bold" tone="secondary" shape="rounded" size="medium" type="submit" (click)="logout()">
+        Cerrar Sesión
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Opcional: Información adicional o enlaces útiles -->
+  <div class="flex items-center justify-center text-sm text-muted-foreground">
+    <p>¿Necesitas más ayuda?</p>
+    <app-button routerLink="/contact" impact="none" tone="primary" shape="rounded" size="small" class="ml-2">
+      Visitar Centro de Ayuda
+    </app-button>
+  </div>
+</form>

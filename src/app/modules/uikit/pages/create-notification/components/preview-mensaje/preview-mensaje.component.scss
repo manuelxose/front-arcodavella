@@ -102,3 +102,30 @@
 .pdf-preview button {
   margin-bottom: 10px;
 }
+/* src/app/modules/uikit/pages/create-notification/create-notification/preview-mensaje.component.scss */
+
+/* Personalizar Angular Material DatePicker para que coincida con Tailwind */
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: #ccc;
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  border-color: #007aff;
+}
+
+.mat-datepicker-toggle {
+  color: #007aff;
+}
+
+.mat-input-element {
+  padding: 0.5rem;
+}
+
+/* Ajustar el color de fondo del DatePicker */
+.mat-datepicker-content {
+  background-color: #f5f5f7; /* Similar al fondo de macOS */
+}
