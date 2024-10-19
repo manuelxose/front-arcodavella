@@ -1,16 +1,19 @@
+// src/app/core/models/menu.model.ts
+
+import { Roles } from '../enums/roles.enums';
+
 export interface MenuItem {
   group: string;
   separator?: boolean;
-  selected?: boolean;
-  active?: boolean;
-  items: Array<SubMenuItem>;
+  children: SubMenuItem[]; // Changed from 'items' to 'children'
 }
 
 export interface SubMenuItem {
   icon?: string;
-  label?: string;
-  route?: string | null;
+  label: string;
+  route?: string;
+  roles?: Roles[];
   expanded?: boolean;
   active?: boolean;
-  children?: Array<SubMenuItem>;
+  children?: SubMenuItem[]; // Support for nested submenus
 }

@@ -1,0 +1,88 @@
+<!-- Barra de acciones -->
+<div class="action-bar">
+  <div class="action-bar-left">
+    <h3 class="title">{{ title }}</h3>
+    <div class="record-count">
+      <span>Número de registros: {{ filteredData.length }}</span>
+    </div>
+  </div>
+  <div class="action-bar-right">
+    <ng-content select="[table-actions]"></ng-content>
+  </div>
+</div>
+
+<!-- Filtros y búsqueda -->
+<div class="filters">
+  <div class="filters-left">
+    <input
+      type="text"
+      placeholder="Buscar..."
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange($event)"
+      class="search-input" />
+    <!-- Filtro por estado si aplica -->
+    <select
+      *ngIf="uniqueStatuses.length > 0"
+      [(ngModel)]="statusFilter"
+      (change)="onFilterChange()"
+      class="status-filter">
+      <option value="">Todos los estados</option>
+      <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
+    </select>
+  </div>
+  <!-- Selector de tamaño de página -->
+  <div class="filters-right">
+    <label for="pageSize">Registros por página:</label>
+    <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()" class="page-size-selector">
+      <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+    </select>
+  </div>
+</div>
+
+<!-- Tabla -->
+<div class="table-container">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th *ngIf="selectable">
+            <input type="checkbox" [checked]="allSelected" (change)="toggleAllSelection($event)" />
+          </th>
+          <th *ngFor="let column of columns" (click)="onSort(column)" [class.sortable]="column.sortable">
+            {{ column.header }}
+            <span *ngIf="column.sortable">
+              <i *ngIf="sortColumn === column.field">{{ sortOrder === 'asc' ? '▲' : '▼' }}</i>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of paginatedData; let i = index">
+          <td *ngIf="selectable">
+            <input type="checkbox" [(ngModel)]="item.selected" (change)="onSelectionChange()" />
+          </td>
+          <td *ngFor="let column of columns">
+            {{ item[column.field] }}
+          </td>
+        </tr>
+        <tr *ngIf="paginatedData.length === 0">
+          <td [attr.colspan]="columns.length + (selectable ? 1 : 0)" class="no-data">No hay datos disponibles</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="pagination">
+    <div class="pagination-info">
+      Mostrando {{ (currentPage - 1) * pageSize + 1 }} - {{ getMinValue() }} de {{ filteredData.length }} registros
+    </div>
+    <div class="pagination-controls">
+      <button (click)="prevPage()" [disabled]="currentPage === 1" class="btn">Anterior</button>
+      <span>Página {{ currentPage }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage * pageSize >= filteredData.length" class="btn">
+        Siguiente
+      </button>
+    </div>
+  </div>
+</div>
