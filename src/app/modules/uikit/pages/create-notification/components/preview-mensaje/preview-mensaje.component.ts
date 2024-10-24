@@ -91,12 +91,7 @@ export class PreviewMensajeComponent implements OnInit, OnChanges {
     const messageHtml = this.message;
 
     // Obtener el HTML con la plantilla seleccionada sin modificar el formato de las listas
-    const rawHtml = this.templateService.getTemplateByName(this.selectedTemplateName, messageHtml, {
-      assemblyDate: this.assemblyDate,
-      currentDate: this.currentDate,
-      usuarios: this.usuarios,
-      listas: this.listas,
-    });
+    const rawHtml = this.templateService.getTemplateByName(this.selectedTemplateName, messageHtml);
 
     // Sustituir las referencias cid por rutas de imágenes locales para la vista previa
     const previewHtml = this.replaceCidWithSrc(rawHtml);

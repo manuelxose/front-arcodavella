@@ -116,7 +116,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Suscribirse a errores del PDF
-    this.pdfErrorSubscription = this.pdfService.getPdfErrors().subscribe((errorMessage) => {
+    this.pdfErrorSubscription = this.pdfService.getPdfErrors().subscribe((errorMessage: string) => {
       this.snackBar.open(`Error en generación de PDF: ${errorMessage}`, 'Cerrar', {
         duration: 5000,
         panelClass: ['snackbar-error'],
@@ -124,7 +124,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     });
 
     // Suscribirse al progreso del PDF
-    this.pdfProgressSubscription = this.pdfService.getPdfProgress().subscribe((progressMessage) => {
+    this.pdfProgressSubscription = this.pdfService.getPdfProgress().subscribe((progressMessage: string) => {
       this.ngZone.run(() => {
         console.log('Progreso de generación de PDF:', progressMessage);
         this.snackBar.open(progressMessage, 'Cerrar', {
@@ -294,9 +294,17 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       if (confirmation) {
         await this.generateAndSendBulkEmails(bulkPayload);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let errorMessage = 'Error desconocido al preparar el envío de correos.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
       console.error('Error al preparar el envío de correos:', error);
-      this.showError(`Error al preparar el envío de correos: ${error.message || error}`);
+      this.showError(`Error al preparar el envío de correos: ${errorMessage}`);
     } finally {
       this.isLoading = false;
     }
@@ -472,9 +480,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       });
 
       this.resetForm();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error en la generación y envío de PDFs:', error);
-      this.showError(`Error en la generación y envío de PDFs: ${error.message || error}`);
     } finally {
       this.isGeneratingPdf = false;
       this.progressPercentage = 0;
@@ -498,9 +505,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       console.log('Payload being sent to API:', payload);
 
       await lastValueFrom(this.notificationService.enviarNotificacionMasiva(payload));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error al enviar notificaciones masivas:', error);
-      this.showError(`Error al enviar notificaciones masivas: ${error.message || error}`);
     }
   }
 

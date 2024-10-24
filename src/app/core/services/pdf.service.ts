@@ -1,115 +1,157 @@
+// src/app/modules/uikit/pages/create-notification/create-notification/pdf.service.ts
+
 import { Injectable } from '@angular/core';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas-pro'; // Import the html2canvas-pro package
-import QRCode from 'qrcode';
+import jsPDF from 'jspdf';
+import { Observable, Subject } from 'rxjs';
+import html2canvas from 'html2canvas';
+import qrcode from 'qrcode-generator';
+
+interface PdfGenerationResult {
+  pdfDataUrl: string;
+  duration: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class PdfService {
-  constructor() {}
+  private pdfWorker!: Worker;
+  private pdfResultSubject = new Subject<PdfGenerationResult>();
+  private pdfErrorSubject = new Subject<string>();
+  private pdfProgressSubject = new Subject<string>();
+
+  constructor() {
+    console.log('PdfService constructor: Inicializando Web Worker...');
+    if (typeof Worker !== 'undefined') {
+      try {
+        // Utiliza import.meta.url para resolver la ruta correctamente
+        // this.pdfWorker = new Worker(new URL('../../pdf.worker.ts', import.meta.url), { type: 'module' });
+
+        this.pdfWorker = new Worker(new URL('./pdf.worker', import.meta.url), { type: 'module' });
+        console.log('PdfService constructor: Web Worker creado exitosamente.');
+
+        // Escuchar mensajes desde el Web Worker
+        this.pdfWorker.onmessage = ({ data }) => {
+          console.log('PdfService: Mensaje recibido del Web Worker:', data);
+          if (data.error) {
+            this.pdfErrorSubject.next(data.error);
+          } else if (data.progress) {
+            // Maneja la actualización de progreso
+            this.pdfProgressSubject.next(data.progress);
+          } else if (data.pdfDataUrl && data.duration) {
+            this.pdfResultSubject.next({
+              pdfDataUrl: data.pdfDataUrl,
+              duration: data.duration,
+            });
+          }
+        };
+
+        // Manejar errores del Web Worker
+        this.pdfWorker.onerror = (error) => {
+          console.error('PdfService: Error del Web Worker:', error);
+          this.pdfErrorSubject.next(error.message);
+        };
+      } catch (error) {
+        console.error('PdfService: Error al instanciar el Web Worker:', error);
+        this.pdfErrorSubject.next('Error al instanciar el Web Worker.');
+      }
+    } else {
+      console.error('PdfService: Web Workers no están soportados en este navegador.');
+      this.pdfErrorSubject.next('Web Workers no están soportados en este navegador.');
+    }
+  }
 
   /**
-   * Generates a PDF from an HTML element, processing unsupported colors and using optimizations.
-   * @param element The HTML element to convert to PDF.
-   * @param fileName The name of the resulting PDF file.
+   * Genera un PDF utilizando el Web Worker y devuelve un Observable con el resultado.
+   * @param pdfData Los datos necesarios para generar el PDF.
+   * @param title El título de la notificación.
+   * @param message El mensaje de la notificación.
+   * @param previewImage Una imagen de vista previa opcional.
+   * @returns Observable que emite el resultado de la generación del PDF.
    */
-  generatePdfFromHtml(element: HTMLElement, fileName: string): void {
-    // Replace unsupported colors like 'oklch' before rendering
-    this.replaceUnsupportedColors(element);
+  /**
+   * Genera un PDF utilizando el Web Worker y devuelve un Observable con el resultado.
+   */
+  generatePdf(
+    pdfData: { numSocio: string; nombre: string; dni: string; email: string | string[] },
+    _title: string,
+    _message: string,
+    previewImage: string | null,
+  ): Observable<PdfGenerationResult> {
+    console.log('PdfService: Iniciando generación de PDF...');
+    return new Observable((observer) => {
+      if (!this.pdfWorker) {
+        console.error('PdfService: Web Worker no está inicializado.');
+        observer.error('Web Worker no está inicializado.');
+        return;
+      }
 
-    // Create a canvas manually and set 'willReadFrequently' for optimization
-    const canvas = document.createElement('canvas');
-    canvas.getContext('2d', { willReadFrequently: true });
-
-    html2canvas(element, {
-      useCORS: true, // This option enables the use of images from different origins
-    })
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
+      // Generar el QR Code como Data URL
+      const qrData = `${pdfData.numSocio}|${pdfData.nombre}|${pdfData.dni}|${
+        Array.isArray(pdfData.email) ? pdfData.email.join(', ') : pdfData.email
+      }`.trim();
+      this.toDataURL(qrData)
+        .then((qrImageUrl) => {
+          console.log('PdfService: Enviando datos al Web Worker:', { pdfData, previewImage, qrImageUrl });
+          // Enviar el mensaje al Web Worker con qrImageUrl
+          this.pdfWorker.postMessage({
+            pdfData,
+            qrImageUrl,
+            previewImage,
+          });
+        })
+        .catch((err) => {
+          console.error('PdfService: Error generando el QR Code:', err);
+          observer.error('Error generando el QR Code: ' + err.message);
         });
 
-        const imgWidth = 210; // A4 width in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        pdf.save(`${fileName}.pdf`);
-      })
-      .catch((error) => {
-        console.error('Error generating PDF from HTML:', error);
+      // Suscribirse a los Subjects para recibir mensajes del worker
+      const resultSubscription = this.pdfResultSubject.subscribe({
+        next: (result) => {
+          console.log('PdfService: PDF generado exitosamente:', result);
+          observer.next(result);
+          observer.complete();
+        },
+        error: (err) => {
+          console.error('PdfService: Error en el resultado del PDF:', err);
+          observer.error(err);
+        },
       });
-  }
 
-  /**
-   * Adds text to an existing PDF document with customization options.
-   * @param text The text to be added.
-   * @param options Customization options like font size, style, and position.
-   */
-  addTextToPdf(
-    text: string,
-    options: {
-      x: number;
-      y: number;
-      fontSize?: number;
-      fontStyle?: 'bold' | 'italic' | 'normal';
-      fontName?: string;
-    } = { x: 10, y: 10 },
-  ): jsPDF {
-    const pdf = new jsPDF();
-    const { x, y, fontSize = 12, fontStyle = 'normal', fontName = 'helvetica' } = options;
+      const errorSubscription = this.pdfErrorSubject.subscribe({
+        next: (error) => {
+          console.error('PdfService: Error recibido del Web Worker:', error);
+          observer.error(error);
+        },
+      });
 
-    // Set the font and style
-    pdf.setFont(fontName, fontStyle);
-    pdf.setFontSize(fontSize);
-    pdf.text(text, x, y);
+      const progressSubscription = this.pdfProgressSubject.subscribe({
+        next: (progress) => {
+          // Emitir actualizaciones de progreso si es necesario
+          console.log('PdfService: Progreso de generación de PDF:', progress);
+        },
+      });
 
-    return pdf;
-  }
-
-  /**
-   * Generates a PDF with custom content, such as text and images, without HTML rendering.
-   * @param content An array defining the content (text, images, etc.) to add to the PDF.
-   * @param fileName The name of the resulting PDF file.
-   */
-  generateCustomPdf(content: Array<{ type: 'text' | 'image'; data: any; options: any }>, fileName: string): void {
-    const pdf = new jsPDF();
-
-    content.forEach((item) => {
-      if (item.type === 'text') {
-        const { x, y, fontSize = 12, fontStyle = 'normal', fontName = 'helvetica' } = item.options;
-        pdf.setFont(fontName, fontStyle);
-        pdf.setFontSize(fontSize);
-        pdf.text(item.data, x, y);
-      } else if (item.type === 'image') {
-        const { x, y, width, height } = item.options;
-        pdf.addImage(item.data, 'PNG', x, y, width, height);
-      }
+      // Limpiar suscripciones cuando el Observable sea desuscrito
+      return () => {
+        resultSubscription.unsubscribe();
+        errorSubscription.unsubscribe();
+        progressSubscription.unsubscribe();
+      };
     });
+  }
 
-    pdf.save(`${fileName}.pdf`);
+  // Método para obtener actualizaciones de progreso
+  getPdfProgress(): Observable<string> {
+    return this.pdfProgressSubject.asObservable();
   }
 
   /**
-   * Replaces unsupported CSS color formats, like 'oklch', with a supported fallback.
-   * @param element The root element to search for unsupported colors.
+   * Devuelve un Observable para manejar errores en la generación de PDFs.
+   * @returns Observable que emite mensajes de error.
    */
-  replaceUnsupportedColors(element: HTMLElement): void {
-    const allElements = element.querySelectorAll('*');
-
-    allElements.forEach((el) => {
-      const styles = window.getComputedStyle(el);
-      const backgroundColor = styles.getPropertyValue('background-color');
-
-      // Check if the color is using the unsupported 'oklch' format
-      if (backgroundColor.includes('oklch')) {
-        // Replace with a fallback color, for example, transparent or a supported rgba color
-        (el as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0)'; // Transparent as a fallback
-      }
-    });
+  getPdfErrors(): Observable<string> {
+    return this.pdfErrorSubject.asObservable();
   }
 
   /**
@@ -117,12 +159,46 @@ export class PdfService {
    * @param data Los datos del socio para incluir en el PDF.
    * @returns Una promesa que resuelve con la URL de datos del PDF generado.
    */
-  async generatePdfDataUrl(data: { numSocio: string; nombre: string; dni: string; email: string }): Promise<string> {
+  async generatePdfDataUrl(data: {
+    numSocio: string;
+    nombre: string;
+    dni: string;
+    email: string | string[];
+    assemblyDate?: string; // Fecha de la Asamblea como ISO string
+    currentDate?: string; // Fecha actual como ISO string
+  }): Promise<string> {
     const doc = new jsPDF();
 
+    // Validar y parsear las fechas
+    const assemblyDate = data.assemblyDate ? new Date(data.assemblyDate) : new Date();
+    const currentDate = data.currentDate ? new Date(data.currentDate) : new Date();
+
+    if (isNaN(assemblyDate.getTime())) {
+      throw new Error('Fecha de la Asamblea inválida.');
+    }
+
+    if (isNaN(currentDate.getTime())) {
+      throw new Error('Fecha actual inválida.');
+    }
+
+    // Formatear las fechas en formato español
+    const formattedAssemblyDate = assemblyDate.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const formattedCurrentDate = currentDate.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
     // Generar el código QR
-    const qrData = `${data.numSocio}|${data.nombre}|${data.dni}|${data.email}`;
-    const qrImageUrl = await QRCode.toDataURL(qrData);
+    const qrData = `${data.numSocio}|${data.nombre}|${data.dni}|${
+      Array.isArray(data.email) ? data.email.join(', ') : data.email
+    }`;
+    const qrImageUrl = await this.toDataURL(qrData); // Asegúrate de tener implementado este método
 
     // Añadir contenido al PDF
 
@@ -130,9 +206,14 @@ export class PdfService {
     doc.setFontSize(16);
     doc.setFont('Helvetica', 'bold');
     doc.text('ASAMBLEA GENERAL ORDINARIA', doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
-    doc.setFont('Helvetica', 'normal');
-    doc.text('convocada para el día 2 de julio de 2024', doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
 
+    // Subtítulo con la fecha de la asamblea
+    doc.setFont('Helvetica', 'normal');
+    doc.text(`Convocada para el día ${formattedAssemblyDate}`, doc.internal.pageSize.getWidth() / 2, 40, {
+      align: 'center',
+    });
+
+    // Sección de admisión
     doc.setFontSize(14);
     doc.text('TARJETA DE ADMISIÓN:', 20, 60);
 
@@ -165,7 +246,7 @@ export class PdfService {
 
     // Calcular la posición Y después del texto de delegación
     const textDimensions = doc.getTextDimensions(delegacionLines);
-    let currentY = 170 + textDimensions.h + 10; // Añadir un margen de 10
+    const currentY = 170 + textDimensions.h + 10; // Añadir un margen de 10
 
     // Añadir líneas para instrucciones adicionales
     doc.text(
@@ -185,13 +266,52 @@ export class PdfService {
     );
     doc.text('..............................................................', 20, currentY + 30);
 
-    // Lugar y fecha
-    doc.text('En Vigo, a 14 de junio de 2024', 20, currentY + 50);
+    // Lugar y fecha actual
+    doc.text(`En Vigo, a ${formattedCurrentDate}`, 20, currentY + 50);
 
     // Firma
     doc.text('Firma Socio/a Cooperativista (OBLIGATORIA)', 20, currentY + 70);
 
     // Retornar el PDF como una URL de datos
     return doc.output('datauristring');
+  }
+
+  /**
+   * Convierte una cadena de texto en una Data URL de una imagen QR.
+   * @param data Cadena de texto para codificar en el QR.
+   * @returns Una promesa que resuelve con la Data URL del QR generado.
+   */
+  private toDataURL(data: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const qr = qrcode(0, 'M'); // 0 = QR Code model 1-40, 'M' = Medium error correction
+      qr.addData(data);
+      qr.make();
+      const qrImageUrl = qr.createDataURL();
+      resolve(qrImageUrl);
+    });
+  }
+
+  /**
+   * Genera un PDF a partir de un elemento HTML.
+   * @param element El elemento HTML que se quiere convertir a PDF.
+   * @param fileName Nombre del archivo PDF resultante.
+   */
+  generatePdfFromHtml(element: HTMLElement, fileName: string): void {
+    html2canvas(element, {
+      useCORS: true, // Si usas imágenes desde URLs externas
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const imgWidth = 210; // Ancho de una página A4 en mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`${fileName}.pdf`);
+    });
   }
 }

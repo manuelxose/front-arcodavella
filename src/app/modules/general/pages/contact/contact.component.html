@@ -1,0 +1,91 @@
+<div class="flex h-screen flex-col md:flex-row">
+  <!-- Columna izquierda con el mapa -->
+  <div class="h-1/2 w-full md:h-full md:w-1/2">
+    <iframe
+      class="h-full w-full"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3023.567890123456!2d-8.72000008462062!3d42.240000179172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2f7b8c12345678%3A0xabcdef1234567890!2sCalle%20de%2C%20Alfonso%20XIII%2C%20n%C2%BA15%2C%2036201%20Vigo%2C%20PO!5e0!3m2!1ses!2s!4v1619624470871!5m2!1ses!2s"
+      frameborder="0"
+      allowfullscreen=""
+      loading="lazy">
+    </iframe>
+  </div>
+
+  <!-- Columna derecha con el formulario de contacto e información -->
+  <div class="flex h-full w-full flex-col justify-center bg-white p-8 md:w-2/3 lg:w-1/2">
+    <!-- Logo -->
+    <div class="mb-6 flex items-center">
+      <img src="assets/logos/logo-arcodavella.png" class="mr-3 h-12 w-12" alt="Logo Arcodavella" />
+      <h2 class="text-3xl font-bold">Contáctanos</h2>
+    </div>
+
+    <!-- Información de contacto -->
+    <div class="contact-info mb-6 space-y-4">
+      <div class="flex items-start">
+        <span class="mr-2 text-xl">📞</span>
+        <div>
+          <p class="font-semibold">Teléfono</p>
+          <p>Ponte en contacto en horario de mañana.</p>
+          <p class="text-blue-500"><a href="tel:986298735">986 298 735</a></p>
+        </div>
+      </div>
+      <div class="flex items-start">
+        <span class="mr-2 text-xl">📍</span>
+        <div>
+          <p class="font-semibold">Dirección</p>
+          <p>Calle de, Alfonso XIII, nº15, 36201 Vigo, PO</p>
+        </div>
+      </div>
+      <div class="flex items-start">
+        <span class="mr-2 text-xl">✉️</span>
+        <div>
+          <p class="font-semibold">Correo</p>
+          <p class="text-blue-500"><a href="mailto:info@arcodavella.gal">info&#64;arcodavella.gal</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario de contacto -->
+    <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="space-y-6">
+      <div class="form-group">
+        <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="mt-1 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [(ngModel)]="emailData.name"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="mt-1 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [(ngModel)]="emailData.email"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="message" class="block text-sm font-medium text-gray-700">Mensaje</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="5"
+          class="mt-1 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [(ngModel)]="emailData.message"
+          required>
+        </textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full rounded-md bg-blue-500 px-4 py-3 text-white transition duration-300 hover:bg-blue-600"
+        [disabled]="contactForm.invalid">
+        Enviar Mensaje
+      </button>
+    </form>
+  </div>
+</div>

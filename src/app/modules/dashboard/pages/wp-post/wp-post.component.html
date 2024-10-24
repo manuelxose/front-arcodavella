@@ -89,11 +89,11 @@
             <!-- Imagen Destacada -->
             <img
               *ngIf="post._embedded?.['wp:featuredmedia']?.[0]?.source_url"
-              [src]="post._embedded['wp:featuredmedia'][0].source_url"
-              [alt]="post._embedded['wp:featuredmedia'][0].alt_text"
+              [src]="post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'assets/icons/image-placeholder.svg'"
+              [alt]="post._embedded?.['wp:featuredmedia']?.[0]?.alt_text || 'No description available'"
               class="mb-4 h-40 w-full rounded-md object-cover"
               loading="lazy"
-              (error)="post._embedded['wp:featuredmedia'][0].source_url = 'assets/icons/image-placeholder.svg'" />
+              (error)="handleImageError(post)" />
 
             <!-- Enlace al post -->
             <a

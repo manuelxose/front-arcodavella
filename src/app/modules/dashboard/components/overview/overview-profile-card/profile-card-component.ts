@@ -47,6 +47,7 @@ export class OverviewProfileCardComponent implements OnInit {
 
   contactUser() {
     // Lógica para contactar al usuario
+    this.router.navigate(['/general/contact']);
   }
 
   maskAccountNumber(accountNumber: string): string {

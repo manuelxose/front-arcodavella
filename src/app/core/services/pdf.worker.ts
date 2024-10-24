@@ -1,28 +1,37 @@
 /// <reference lib="webworker" />
 
 import { jsPDF } from 'jspdf';
-import qrcode from 'qrcode-generator';
 
-// Definir la interfaz para los datos que se recibirán
 interface PdfData {
   numSocio: string;
   nombre: string;
   dni: string;
   email: string;
-  logoImageUrl?: string | null; // Data URL del logo (opcional)
-  assemblyDate: string; // Fecha de la Asamblea como ISO string
-  currentDate: string; // Fecha actual como ISO string
+  logoImageUrl?: string | null;
+  assemblyDate: string;
+  currentDate: string;
 }
 
-addEventListener('message', async ({ data }) => {
-  const { pdfData, previewImage } = data as {
-    pdfData: PdfData;
-    previewImage: string | null;
-  };
+interface PdfWorkerMessage {
+  pdfData: PdfData;
+  qrImageUrl: string;
+  previewImage: string | null;
+}
+
+interface PdfGenerationResult {
+  pdfDataUrl: string;
+  duration: number;
+}
+
+console.log('Web Worker iniciado.');
+
+addEventListener('message', async ({ data }: { data: PdfWorkerMessage }) => {
+  console.log('Worker recibió datos:', data);
+  const { pdfData, qrImageUrl, previewImage } = data;
 
   try {
     const startTime = performance.now();
-    console.log('Data en el worker', pdfData);
+    console.log('Iniciando generación de PDF...');
 
     // Reconstruir objetos Date a partir de las cadenas ISO
     const assemblyDate = new Date(pdfData.assemblyDate);
@@ -35,13 +44,6 @@ addEventListener('message', async ({ data }) => {
     if (isNaN(currentDate.getTime())) {
       throw new Error('Fecha actual inválida.');
     }
-
-    // Generar el código QR como Data URL usando qrcode-generator
-    const qr = qrcode(0, 'M'); // 0 = QR Code model 1-40, 'M' = Medium error correction
-    const qrDataString = `${pdfData.numSocio}|${pdfData.nombre}|${pdfData.dni}|${pdfData.email}`.trim();
-    qr.addData(qrDataString);
-    qr.make();
-    const qrImageUrl = qr.createDataURL();
 
     // Crear el documento PDF
     const doc = new jsPDF();
@@ -57,6 +59,7 @@ addEventListener('message', async ({ data }) => {
 
     // Añadir el logo en la esquina superior izquierda (si existe)
     if (pdfData.logoImageUrl) {
+      console.log('Añadiendo logo al PDF.');
       const logoWidth = 50; // Ajustar según sea necesario
       const logoHeight = 50; // Mantener proporción
       const logoX = leftMargin; // Posición X fija para alineación
@@ -112,6 +115,7 @@ addEventListener('message', async ({ data }) => {
     const qrHeight = 50;
     const qrX = (pageWidth - qrWidth) / 2;
     doc.addImage(qrImageUrl, 'PNG', qrX, currentY, qrWidth, qrHeight);
+    console.log('QR Code añadido al PDF.');
 
     // Incrementar currentY después del QR
     currentY += qrHeight + 10;
@@ -122,6 +126,7 @@ addEventListener('message', async ({ data }) => {
     const squareY = currentY;
     doc.rect(squareX, squareY, squareSize, squareSize).stroke();
     doc.text(' DELEGO', squareX + squareSize + 5, squareY + 6, { align: 'left' });
+    console.log('Cuadrado y texto "DELEGO" añadidos al PDF.');
 
     // Incrementar currentY después del cuadrado y "DELEGO"
     currentY += squareSize + 10;
@@ -137,6 +142,7 @@ addEventListener('message', async ({ data }) => {
       'instrucciones para el ejercicio del voto:';
     const delegacionLines = doc.splitTextToSize(delegacionText, pageWidth - leftMargin - rightMargin);
     doc.text(delegacionLines, leftMargin, currentY, { align: 'left' });
+    console.log('Texto de delegación añadido al PDF.');
 
     // Incrementar currentY después del texto de delegación
     currentY += delegacionLines.length * 7 + 5;
@@ -145,6 +151,7 @@ addEventListener('message', async ({ data }) => {
     drawDottedLine(doc, leftMargin, currentY, pageWidth - rightMargin, currentY, 3, 0.3);
     currentY += 5; // Espacio entre líneas
     drawDottedLine(doc, leftMargin, currentY, pageWidth - rightMargin, currentY, 3, 0.3);
+    console.log('Líneas punteadas añadidas al PDF.');
 
     // Incrementar currentY después de las líneas punteadas
     currentY += 15;
@@ -164,46 +171,59 @@ addEventListener('message', async ({ data }) => {
 
     // Firma alineada a la izquierda
     doc.text('Firma Socio/a Cooperativista (OBLIGATORIA)', leftMargin, currentY, { align: 'left' });
+    console.log('Texto de firma añadido al PDF.');
 
     // Incrementar currentY después de la firma
     currentY += 20;
 
     // Añadir vista previa del mensaje si existe, dentro de la misma página
-    if (previewImage) {
-      const imageY = currentY;
-      const imageWidth = pageWidth - leftMargin - rightMargin; // Ajustar para los márgenes
-      const imageHeight = 40; // Reducido de 50 a 40 para ahorrar espacio
+    if (previewImage && previewImage.startsWith('data:image/png;base64,')) {
+      try {
+        const imageY = currentY;
+        const imageWidth = pageWidth - leftMargin - rightMargin; // Ajustar para los márgenes
+        const imageHeight = 40; // Reducido de 50 a 40 para ahorrar espacio
 
-      // Verificar si hay suficiente espacio en la página
-      if (imageY + imageHeight < pageHeight - 20) {
-        // Añadir título de vista previa
-        doc.setFont('Helvetica', 'bold');
-        doc.setFontSize(16);
-        doc.text('Vista Previa del Mensaje', leftMargin, imageY, { align: 'left' });
+        // Verificar si hay suficiente espacio en la página
+        if (imageY + imageHeight < pageHeight - 20) {
+          // Añadir título de vista previa
+          doc.setFont('Helvetica', 'bold');
+          doc.setFontSize(16);
+          doc.text('Vista Previa del Mensaje', leftMargin, imageY, { align: 'left' });
 
-        // Añadir la imagen de vista previa
-        doc.setFont('Helvetica', 'normal');
-        doc.setFontSize(12);
-        doc.addImage(previewImage, 'PNG', leftMargin, imageY + 10, imageWidth, imageHeight);
+          // Añadir la imagen de vista previa
+          doc.setFont('Helvetica', 'normal');
+          doc.setFontSize(12);
+          doc.addImage(previewImage, 'PNG', leftMargin, imageY + 10, imageWidth, imageHeight);
+          console.log('Imagen de vista previa añadida al PDF.');
 
-        postMessage({ progress: 'Imagen de vista previa añadida al PDF' });
-      } else {
-        postMessage({
-          progress: 'No hay suficiente espacio para añadir la imagen de vista previa en la misma página.',
-        });
+          postMessage({ progress: 'Imagen de vista previa añadida al PDF' });
+        } else {
+          console.log('No hay suficiente espacio para añadir la imagen de vista previa en la misma página.');
+          postMessage({
+            progress: 'No hay suficiente espacio para añadir la imagen de vista previa en la misma página.',
+          });
+        }
+      } catch (addImageError) {
+        console.error('Error al añadir la imagen de vista previa al PDF:', addImageError);
+        postMessage({ error: 'Error al añadir la imagen de vista previa al PDF.' });
       }
+    } else {
+      console.log('previewImage no es un Data URL válido de PNG o es null.');
     }
 
     // Generar el PDF como Data URL
     const pdfDataUrl = doc.output('datauristring');
+    console.log('PDF generado como Data URL.');
 
     const endTime = performance.now();
     const duration = endTime - startTime;
+    console.log(`Generación de PDF completada en ${duration} ms.`);
 
     // Enviar el resultado al hilo principal
     postMessage({ pdfDataUrl, duration });
-  } catch (error: any) {
-    postMessage({ error: error.message || 'Error generando el PDF' });
+  } catch (error) {
+    console.error('Error generando el PDF:', error);
+    postMessage({ error: (error as Error).message || 'Error generando el PDF' });
   }
 
   // Función para dibujar una línea punteada manualmente

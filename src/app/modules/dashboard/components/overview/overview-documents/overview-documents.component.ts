@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgStyle, CurrencyPipe, CommonModule } from '@angular/common';
-import { WPMedia } from 'src/app/core/models/wp.model';
 import { DocumentosService } from 'src/app/core/services/documentos.service';
+import { WPMedia } from 'src/app/core/models/wp.model';
 interface Document {
   nombre: string;
   descripcion: string;
@@ -39,7 +39,7 @@ export class OverviewDocumentsComponent implements OnInit {
   mediaItems: WPMedia[] = [];
   errorMessage: string = '';
 
-  constructor(private documentosService: DocumentosService) {}
+  constructor(private readonly documentosService: DocumentosService) {}
 
   ngOnInit(): void {
     this.fetchMedia();

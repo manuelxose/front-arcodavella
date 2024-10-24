@@ -1,3 +1,5 @@
+import { StatusCodes } from 'src/app/core/enums/status.enum';
+
 export interface Member {
   id: string;
   name: string;
@@ -6,5 +8,5 @@ export interface Member {
   email: string;
   comments: string;
   selected: boolean;
-  status: any;
+  status: StatusCodes;
 }

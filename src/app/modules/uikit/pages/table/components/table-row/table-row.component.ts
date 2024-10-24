@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Member } from '../../model/member.model';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule, SvgIconRegistryService } from 'angular-svg-icon';
-import { APP_BASE_HREF, CommonModule, NgFor } from '@angular/common';
+import { APP_BASE_HREF, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/services/user.service';
 import { ErrorHandlerService } from 'src/app/core/services/errorHandler.service';
+import { User } from 'src/app/core/models/user.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Member } from 'src/app/core/models/member.model';
 
 @Component({
   selector: '[app-table-row]',
@@ -37,15 +39,15 @@ export class TableRowComponent implements OnInit {
     this.selectionChange.emit(this.user);
   }
 
-  showProfile() {
+  showProfile(): void {
     this.userService.getUserProfileByEmail(this.user.email).subscribe({
-      next: (response: any) => {
-        console.log('en la row: ', response); // Verifica que los datos que llegan son correctos
+      next: (response: { profile: User }) => {
+        console.log('en la row: ', response.profile); // Verifica que los datos que llegan son correctos
         this.router.navigate(['/dashboard/member-profile'], {
-          state: { userProfile: response }, // Pasa los datos a través de la propiedad `state`
+          state: { userProfile: response.profile }, // Pasa los datos a través de la propiedad `state`
         });
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         this.errorHandler.handleHttpError(error); // Manejo de errores
       },
     });

@@ -1,3 +1,5 @@
+import { StatusCodes } from '../enums/status.enum';
+
 export interface Member {
   id: string;
   name: string;
@@ -5,8 +7,10 @@ export interface Member {
   role: string;
   dni: string;
   memberNumber: string;
-  status: string;
+  status: StatusCodes;
   phone: string;
   accountNumber: string;
   address: string;
+  comments: string;
+  selected: boolean;
 }

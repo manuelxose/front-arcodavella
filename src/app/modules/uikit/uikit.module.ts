@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UikitRoutingModule } from './uikit-routing.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';

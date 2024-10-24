@@ -23,7 +23,7 @@ export interface TableData {
   imports: [FormsModule, CommonModule],
 })
 export class TableComponent {
-  @Input() data: TableData[] = [];
+  @Input() data: any[] = [];
   @Input() columns: TableColumn[] = [];
   @Input() title = 'Tabla Genérica';
   @Input() selectable = false;

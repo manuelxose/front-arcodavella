@@ -109,4 +109,9 @@ export class SignUpComponent implements OnInit {
 
     console.log('entra', password, this.passwordStrength);
   }
+
+  navigateTo(url: string) {
+    console.log('navegabdi a', url);
+    this.router.navigate([`/${url}`]);
+  }
 }

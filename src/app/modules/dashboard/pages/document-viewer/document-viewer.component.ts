@@ -9,10 +9,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import { DocumentosService } from 'src/app/core/services/documentos.service';
-import { WPMedia } from 'src/app/core/models/wp.model';
 import { MakeFolderDialogComponent } from '../../components/documen-view/make-folder-dialog/make-folder-dialog.component';
 import { BreadcrumbComponent } from '../../components/documen-view/breadcrumb/breadcrumb.component';
+import { WPMedia } from 'src/app/core/models/wp.model';
+import { DocumentosService } from 'src/app/core/services/documentos.service';
 
 interface Carpeta {
   nombre: string;

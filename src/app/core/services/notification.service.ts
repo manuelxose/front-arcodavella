@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NotificationI } from 'src/app/core/models/notification.model';
 import { environment } from 'src/environments/environment';
 import { StatusCodes } from 'src/app/core/enums/status.enum';
 import { NotificationTypes } from '../enums/notification.enums';
+import { catchError } from 'rxjs/operators';
+import { SendBulkEmailDTO, SendEmailDTO } from '../models/email.model';
+import pako from 'pako';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +15,7 @@ import { NotificationTypes } from '../enums/notification.enums';
 export class NotificationService {
   private apiUrl = `${environment.apiUrl}`;
 
-  // BehaviorSubject para mantener las notificaciones
+  // BehaviorSubject para gestionar el estado de las notificaciones
   private notificationsSubject = new BehaviorSubject<NotificationI[]>([]);
   notifications$: Observable<NotificationI[]> = this.notificationsSubject.asObservable();
 
@@ -22,7 +25,22 @@ export class NotificationService {
   loadNotifications(): void {
     this.http
       .get<{ notifications: NotificationI[] }>(`${this.apiUrl}/notification/all`, { withCredentials: true })
-      .subscribe((response) => this.notificationsSubject.next(response.notifications));
+      .pipe(
+        catchError(this.handleError<{ notifications: NotificationI[] }>('loadNotifications', { notifications: [] })),
+      )
+      .subscribe(
+        (response) => {
+          if (response && response.notifications) {
+            this.notificationsSubject.next(response.notifications);
+          } else {
+            this.notificationsSubject.next([]); // Manejar caso donde las notificaciones puedan no existir
+          }
+        },
+        (error) => {
+          console.error('Error loading notifications:', error);
+          this.notificationsSubject.next([]); // Manejar caso de error con un array vacío
+        },
+      );
   }
 
   // Obtener el array actual de notificaciones
@@ -30,45 +48,47 @@ export class NotificationService {
     return this.notificationsSubject.getValue();
   }
 
-  // Actualizar el estado de una notificación tanto localmente como en el servidor
-  updateNotificationStatus(notificationId: string, status: StatusCodes): void {
+  // Actualizar el estado de una notificación localmente y en el servidor
+  updateNotificationStatus(notificationId: string, status: StatusCodes): Observable<any> {
     this.updateNotificationState(notificationId, status);
-    this.sendNotificationUpdateToServer(notificationId, status);
+    return this.sendNotificationUpdateToServer(notificationId, status);
   }
 
-  // Filtrar las notificaciones por estado
+  // Filtrar notificaciones por estado
   filterNotificationsByStatus(status: StatusCodes | 'all'): NotificationI[] {
     const notifications = this.getNotifications();
     return status === 'all' ? notifications : notifications.filter((notification) => notification.status === status);
   }
 
-  // Aceptar solicitud del usuario (user_request o update_profile)
-  acceptRequest(notificationId: string): void {
+  // Aceptar una solicitud basada en el tipo de notificación
+  acceptRequest(notificationId: string): Observable<any> {
     const notification = this.getNotificationById(notificationId);
-    if (!notification) return;
+    if (!notification) return throwError(() => new Error('Notificación no encontrada'));
 
-    if (notification.type === NotificationTypes.USER_REQUEST) {
-      this.handleUserRequest(notificationId, notification.recipientId);
-    } else if (notification.type === NotificationTypes.UPDATE_PROFILE) {
-      this.handleProfileUpdate(
-        notificationId,
-        notification.recipientId,
-        notification.fieldToUpdate,
-        notification.newValue,
-      );
+    switch (notification.type) {
+      case NotificationTypes.USER_REQUEST:
+        return this.handleUserRequest(notificationId, notification.recipientId);
+      case NotificationTypes.UPDATE_PROFILE:
+        return this.handleProfileUpdate(
+          notificationId,
+          notification.recipientId,
+          notification.fieldToUpdate,
+          notification.newValue,
+        );
+      default:
+        console.warn('Unknown notification type');
+        return throwError(() => new Error('Tipo de notificación desconocido'));
     }
   }
 
   // Crear una nueva notificación en el servidor
-  createNotification(data: NotificationI): void {
-    console.log('Datos a enviar creando la notificacion: ', data);
-    this.http.post(`${this.apiUrl}/notification`, { data }, { withCredentials: true }).subscribe(
-      (response) => console.log('Notification sent successfully:', response),
-      (error) => console.error('Error sending notification:', error),
-    );
+  createNotification(data: NotificationI): Observable<any> {
+    return this.http
+      .post(`${this.apiUrl}/notification`, { data }, { withCredentials: true })
+      .pipe(catchError(this.handleError('createNotification')));
   }
 
-  // Método privado para actualizar el estado de la notificación localmente
+  // Actualizar estado de notificación localmente
   private updateNotificationState(notificationId: string, status: StatusCodes): void {
     const updatedNotifications = this.getNotifications().map((notification) =>
       notification.id === notificationId ? { ...notification, status } : notification,
@@ -76,53 +96,125 @@ export class NotificationService {
     this.notificationsSubject.next(updatedNotifications);
   }
 
-  // Método privado para enviar la actualización de la notificación al servidor
-  private sendNotificationUpdateToServer(notificationId: string, status: StatusCodes): void {
-    this.http
-      .put(`${this.apiUrl}/notification/${notificationId}`, { status }, { withCredentials: true })
-      .subscribe(() => console.log(`Notification ${notificationId} status updated to ${status} on server`));
+  // Enviar actualización de notificación al servidor
+  private sendNotificationUpdateToServer(notificationId: string, status: StatusCodes): Observable<any> {
+    return this.http.put(`${this.apiUrl}/notification/${notificationId}`, { status }, { withCredentials: true }).pipe(
+      catchError(this.handleError('sendNotificationUpdateToServer')),
+      // Opcional: Puedes agregar tap para loguear el éxito
+    );
   }
 
-  // Método privado para manejar la aceptación de una solicitud de usuario
-  private handleUserRequest(notificationId: string, recipientId: string): void {
-    this.updateUserStatus(recipientId, StatusCodes.ACTIVE).subscribe(() => {
-      this.updateNotificationStatus(notificationId, StatusCodes.APPROVED);
-    });
+  // Manejar la aceptación de una solicitud de usuario
+  private handleUserRequest(notificationId: string, recipientId: string): Observable<any> {
+    return this.updateUserStatus(recipientId, StatusCodes.ACTIVE).pipe(
+      catchError(this.handleError('handleUserRequest')),
+      // En el pipe, puedes agregar más operadores si es necesario
+    );
   }
 
-  // Método privado para manejar la actualización de perfil
+  // Manejar la aceptación de una actualización de perfil
   private handleProfileUpdate(
     notificationId: string,
     recipientId: string,
     fieldToUpdate?: string,
     newValue?: any,
-  ): void {
-    console.log('llega aqui');
+  ): Observable<any> {
+    if (!fieldToUpdate || newValue === undefined) {
+      return throwError(() => new Error('Campo a actualizar o nuevo valor no proporcionado'));
+    }
 
-    if (!fieldToUpdate || newValue === undefined) return;
-    this.updateUserProfile(recipientId, fieldToUpdate, newValue).subscribe(() => {
-      this.updateNotificationStatus(notificationId, StatusCodes.APPROVED);
-    });
+    return this.updateUserProfile(recipientId, fieldToUpdate, newValue).pipe(
+      catchError(this.handleError('handleProfileUpdate')),
+      // En el pipe, puedes agregar más operadores si es necesario
+    );
   }
 
-  // Método privado para obtener una notificación por ID
+  // Obtener una notificación por ID
   private getNotificationById(notificationId: string): NotificationI | undefined {
     return this.getNotifications().find((notif) => notif.id === notificationId);
   }
 
-  // Método privado para actualizar el estado de un usuario
+  // Actualizar el estado del usuario
   private updateUserStatus(recipientId: string, status: StatusCodes): Observable<any> {
-    return this.http.put(`${this.apiUrl}/auth/${recipientId}`, { status }, { withCredentials: true });
+    return this.http
+      .put(`${this.apiUrl}/auth/${recipientId}`, { status }, { withCredentials: true })
+      .pipe(catchError(this.handleError('updateUserStatus')));
   }
 
-  // Método privado para actualizar el perfil del usuario
+  // Actualizar el perfil del usuario
   private updateUserProfile(recipientId: string, fieldToUpdate: string, newValue: any): Observable<any> {
-    console.log('Envio de modificacion de usuario');
+    return this.http
+      .put(`${this.apiUrl}/auth/${recipientId}`, { [fieldToUpdate]: newValue }, { withCredentials: true })
+      .pipe(catchError(this.handleError('updateUserProfile')));
+  }
 
-    return this.http.put(
-      `${this.apiUrl}/auth/${recipientId}`,
-      { [fieldToUpdate]: newValue },
-      { withCredentials: true },
-    );
+  // Obtener todos los usuarios
+  getAllUsers(): Observable<any> {
+    return this.http
+      .get(`${this.apiUrl}/auth/all`, { withCredentials: true })
+      .pipe(catchError(this.handleError('getAllUsers')));
+  }
+
+  // Obtener todos los miembros
+  getAllMembers(): Observable<any> {
+    return this.http
+      .get(`${this.apiUrl}/member/all`, { withCredentials: true })
+      .pipe(catchError(this.handleError('getAllMembers')));
+  }
+
+  // --- Métodos para Envío de Correos Electrónicos ---
+
+  /**
+   * Enviar un correo electrónico individual.
+   * @param data Datos del correo a enviar.
+   * @returns Observable con la respuesta de la API.
+   */
+  enviarNotificacion(data: SendEmailDTO): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.http
+      .post(`${this.apiUrl}/notifications/send`, data, { headers })
+      .pipe(catchError(this.handleError('enviarNotificacion')));
+  }
+
+  /**
+   * Enviar correos electrónicos de forma masiva.
+   * @param data Datos de los correos a enviar en bloque.
+   * @returns Observable con la respuesta de la API.
+   */
+  enviarNotificacionMasiva(data: SendBulkEmailDTO): Observable<any> {
+    // Comprimir los datos usando Gzip
+    const compressedData = pako.gzip(JSON.stringify(data));
+
+    // Convertir el Uint8Array a un Blob
+    const blob = new Blob([compressedData], { type: 'application/octet-stream' });
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/octet-stream', // Indicador de contenido binario
+      'Content-Encoding': 'gzip', // Señaliza que está comprimido
+    });
+
+    return this.http
+      .post(`${this.apiUrl}/notification/send-bulk`, blob, {
+        headers,
+        responseType: 'json', // Asegura que la respuesta se maneje como JSON
+      })
+      .pipe(catchError(this.handleError('enviarNotificacionMasiva')));
+  }
+  // --- Fin de Métodos para Envío de Correos Electrónicos ---
+
+  // Método privado para manejar errores de HttpClient
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`); // Loguear en la consola
+
+      // Puedes personalizar el manejo de errores aquí
+      // Por ejemplo, podrías enviar el error a un servicio de logging
+
+      // Retornar un observable con un valor predeterminado para continuar la aplicación
+      return of(result as T);
+    };
   }
 }

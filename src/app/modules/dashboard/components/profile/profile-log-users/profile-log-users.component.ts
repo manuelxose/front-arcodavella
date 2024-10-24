@@ -10,14 +10,18 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ProfileLogUsersComponent implements OnInit {
   @Input() userLogins!: {
-    username: string;
-    date: Date;
-    status: string;
-    ip: string;
+    email: string;
+    id: string;
+    ipAddress: string;
+    timestamp: string;
+    status?: string;
   }[];
+
   constructor() {}
 
   ngOnInit(): void {
+    console.log('userLogins', this.userLogins);
+
     //Añadimos el estado suceso a los registros de login de usuarios
     this.userLogins.forEach((user) => {
       user.status = 'Success';
@@ -36,11 +40,15 @@ export class ProfileLogUsersComponent implements OnInit {
 
   /** Método para ordenar los registros de login de usuarios. */
   sortUsers() {
-    this.userLogins.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    this.userLogins.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }
 
   /** Método para invertir el orden de los registros de login de usuarios. */
   invertSort() {
     this.userLogins.reverse();
+  }
+
+  ngOnChanges() {
+    console.log('ngOnChanges', this.userLogins);
   }
 }

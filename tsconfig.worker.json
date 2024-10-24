@@ -1,0 +1,12 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/worker",
+    "target": "es2015",
+    "lib": ["es2018", "dom", "webworker"],
+    "types": [],
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.worker.ts"]
+}

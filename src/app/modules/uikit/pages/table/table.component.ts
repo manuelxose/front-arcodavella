@@ -1,20 +1,13 @@
-import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
-import { Member } from './model/member.model';
-import { FormsModule } from '@angular/forms';
-import { TableHeaderComponent } from './components/table-header/table-header.component';
-import { TableFooterComponent } from './components/table-footer/table-footer.component';
-import { TableRowComponent } from './components/table-row/table-row.component';
-import { TableActionComponent } from './components/table-action/table-action.component';
 import { toast } from 'ngx-sonner';
-import { UploadCsvModalComponent } from 'src/app/shared/components/upload-csv-modal/upload-csv-modal.component';
 import { DeleteConfirmationModalComponent } from 'src/app/shared/components/delete-confirmation-modal/delete-confirmation-modal.component';
 import { environment } from 'src/environments/environment';
-import { AddMemberModalComponent } from 'src/app/shared/components/add-member-modal/add-member-modal.component';
-import { AngularSvgIconModule, SvgLoader } from 'angular-svg-icon';
-import { APP_BASE_HREF, CommonModule } from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
 import { SvgIconRegistryService } from 'angular-svg-icon';
 import { ExcelService } from 'src/app/core/services/excel.service';
+import { Member } from 'src/app/core/models/member.model';
+
 @Component({
   selector: 'app-table',
 
@@ -130,19 +123,26 @@ export class TableComponent implements OnInit {
 
   /**
    * Mostrar un toast de éxito o error.
+   * @param message El mensaje que se mostrará en el toast.
+   * @param type Tipo de toast ('success' o 'error').
    */
-  private showToast(message: string, type: 'success' | 'error') {
+  private showToast(message: string, type: 'success' | 'error'): void {
     const toastOptions = {
       position: 'bottom-right' as const, // Asegura que el valor de posición sea correcto
     };
-    type === 'success' ? toast.success(message, toastOptions) : toast.error(message, toastOptions);
+
+    if (type === 'success') {
+      toast.success(message, toastOptions);
+    } else {
+      toast.error(message, toastOptions);
+    }
   }
 
   /**
    * Actualizar los usuarios que se muestran en la página actual.
    */
-  private updateDisplayedUsers() {
-    let filteredUsers = this.applyFilters([...this.allUsers]);
+  private updateDisplayedUsers(): void {
+    const filteredUsers = this.applyFilters([...this.allUsers]);
 
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -214,16 +214,22 @@ export class TableComponent implements OnInit {
   /**
    * Manejar la selección de un usuario.
    */
-  public onUserSelectionChange(user: Member) {
-    user.selected
-      ? this.selectedUsers.push(user)
-      : (this.selectedUsers = this.selectedUsers.filter((u) => u.id !== user.id));
+  /**
+   * Manejar el cambio de selección de un usuario.
+   * @param user El usuario cuyo estado de selección ha cambiado.
+   */
+  public onUserSelectionChange(user: Member): void {
+    if (user.selected) {
+      this.selectedUsers.push(user);
+    } else {
+      this.selectedUsers = this.selectedUsers.filter((u) => u.id !== user.id);
+    }
   }
 
   /**
    * Manejar errores en las solicitudes HTTP.
    */
-  private handleRequestError(error: any, message: string) {
+  private handleRequestError(error: Error, message: string): void {
     toast.error(message, {
       position: 'bottom-right',
       description: error.message,
@@ -290,7 +296,7 @@ export class TableComponent implements OnInit {
       DNI: member.dni,
       Email: member.email,
       'Número Actual': member.memberNumber,
-      Observaciones: member.comments,
+      Observaciones: member.comments || '', // Aquí convertimos undefined a una cadena vacía
       Estado: member.status,
     }));
 

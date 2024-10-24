@@ -1,10 +1,10 @@
 // src/app/components/wp-posts/wp-posts.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { WPPost, WPCategory } from 'src/app/core/models/wp.model';
 import { WpPostsService } from 'src/app/core/services/wp-blog.service';
+import { WPCategory, WPPost } from 'src/app/core/models/wp.model';
 
 @Component({
   selector: 'app-wp-posts',
@@ -14,7 +14,7 @@ import { WpPostsService } from 'src/app/core/services/wp-blog.service';
   imports: [CommonModule, FormsModule],
 })
 export class WpPostComponent implements OnInit {
-  posts: WPPost[] = [];
+  posts: WPPost[] = [] as WPPost[];
   categories: WPCategory[] = []; // Categorías principales
   subCategories: WPCategory[] = []; // Subcategorías basadas en la categoría seleccionada
   selectedCategory: string = 'all'; // 'all', 'noticias', 'blog', etc.

@@ -25,7 +25,7 @@ import { NgFor, NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
 export class NavbarMobileMenuComponent implements OnInit {
   constructor(public menuService: MenuService) {}
 
-  public toggleMenu(subMenu: MenuItem) {
+  public toggleMenu(subMenu: SubMenuItem) {
     this.menuService.toggleMenu(subMenu);
   }
 

@@ -1,19 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { NotificationI } from 'src/app/core/models/notification.model';
 
 // Define the AdminAction interface within the component
-interface AdminAction {
-  createdAt: string; // ISO date string
-  id: string;
-  message: string;
-  recipientId: string;
-  recipientType: string;
-  status: string;
-  summary: string;
-  title: string;
-  type: string;
-  updatedAt: string; // ISO date string
-}
 
 @Component({
   selector: 'app-profile-log',
@@ -23,7 +12,7 @@ interface AdminAction {
   styleUrls: ['./profile-log.component.scss'],
 })
 export class ProfileLogComponent implements OnChanges {
-  @Input() adminActions: AdminAction[] = [];
+  @Input() adminActions: NotificationI[] = [];
 
   // Mapping of internal type identifiers to user-friendly names
   private typeDisplayMap: { [key: string]: string } = {
@@ -54,10 +43,10 @@ export class ProfileLogComponent implements OnChanges {
   private processAdminActions(): void {
     this.processedAdminActions = this.adminActions.map((action) => ({
       ...action,
-      displayType: this.getDisplayType(action.type),
-      formattedCreatedAt: this.getFormattedDate(action.createdAt),
-      formattedUpdatedAt: this.getFormattedDate(action.updatedAt),
-      affectedEmail: this.extractEmail(action.message),
+      displayType: this.getDisplayType(action.type ?? ''), // Handle possible undefined values
+      formattedCreatedAt: this.getFormattedDate(action.createdAt ?? ''), // Handle possible undefined values
+      formattedUpdatedAt: this.getFormattedDate(action.updatedAt ?? ''), // Handle possible undefined values
+      affectedEmail: this.extractEmail(action.message ?? ''), // Handle possible undefined values
     }));
   }
 
@@ -94,7 +83,7 @@ export class ProfileLogComponent implements OnChanges {
 }
 
 // Define a processed admin action interface to include additional fields
-interface ProcessedAdminAction extends AdminAction {
+interface ProcessedAdminAction extends NotificationI {
   displayType: string;
   formattedCreatedAt: string;
   formattedUpdatedAt: string;

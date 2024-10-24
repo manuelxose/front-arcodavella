@@ -9,8 +9,18 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   console.log('AuthGuard invoked for route:', state.url);
 
+  // Define rutas públicas que no requieren autenticación
+  const publicRoutes = ['/documents/terms-services', '/auth/sign-in', '/auth/sign-up'];
+
+  // Si la ruta es pública, permite el acceso
+  if (publicRoutes.includes(state.url)) {
+    console.log('Ruta pública, acceso permitido:', state.url);
+    return true;
+  }
+
+  // Si el usuario no está autenticado, redirige a la página de inicio de sesión
   if (!authService.isAuthenticated()) {
-    console.log('User is not authenticated. Redirecting to /auth/sign-up');
+    console.log('User is not authenticated. Redirecting to /auth/sign-in');
     router.navigate(['/auth/sign-in'], { queryParams: { returnUrl: state.url } });
     return false;
   }

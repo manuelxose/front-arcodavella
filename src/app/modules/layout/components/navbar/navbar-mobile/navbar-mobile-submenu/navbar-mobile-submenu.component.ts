@@ -1,19 +1,28 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MenuService } from 'src/app/modules/layout/services/menu.service';
-import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
+import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgTemplateOutlet } from '@angular/common';
+import { SidebarSubmenuComponent } from '../../../sidebar/sidebar-submenu/sidebar-submenu.component';
 
 @Component({
   selector: 'app-navbar-mobile-submenu',
   templateUrl: './navbar-mobile-submenu.component.html',
   styleUrls: ['./navbar-mobile-submenu.component.scss'],
   standalone: true,
-  imports: [NgClass, NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, AngularSvgIconModule],
+  imports: [
+    NgClass,
+    NgFor,
+    NgTemplateOutlet,
+    RouterLinkActive,
+    RouterLink,
+    AngularSvgIconModule,
+    SidebarSubmenuComponent,
+  ],
 })
 export class NavbarMobileSubmenuComponent implements OnInit {
-  @Input() public submenu!: MenuItem;
+  @Input() public submenu!: SubMenuItem;
 
   constructor(public menuService: MenuService) {}
 

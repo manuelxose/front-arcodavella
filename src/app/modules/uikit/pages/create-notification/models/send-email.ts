@@ -7,6 +7,7 @@ export interface SendEmailDTO {
   bodyHtml?: string; // Cuerpo del mensaje en HTML (opcional)
   attachments?: Attachment[]; // Adjuntos (opcional)
   memberNumber?: string;
+  numSocio?: string;
   nombre?: string;
   dni?: string;
 }
@@ -22,4 +23,8 @@ export interface Attachment {
   contentType?: string; // Tipo MIME del archivo
   encoding?: string; // Codificación, por ejemplo, 'base64'
   cid?: string;
+}
+
+export interface Buffer {
+  toString(): string;
 }

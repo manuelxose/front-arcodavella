@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout.component';
+import { GeneralComponent } from '../general/general.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,22 @@ const routes: Routes = [
     path: 'uikit',
     component: LayoutComponent,
     loadChildren: () => import('../uikit/uikit.module').then((m) => m.UikitModule),
+  },
+  {
+    path: 'documents',
+    component: LayoutComponent,
+    loadChildren: () => import('../documentation/documentation.module').then((m) => m.DocumentationModule),
+  },
+  {
+    path: 'general',
+    component: LayoutComponent,
+    loadChildren: () => import('../general/general.module').then((m) => m.GeneralModule),
+  },
+
+  {
+    path: '**',
+    redirectTo: 'errors/404',
+    pathMatch: 'full',
   },
 
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

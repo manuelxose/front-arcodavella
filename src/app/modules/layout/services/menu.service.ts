@@ -4,7 +4,7 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';
-import { Roles } from 'src/app/core/enums/roles.enum';
+import { Roles } from 'src/app/core/enums/roles.enums';
 import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 
@@ -134,7 +134,7 @@ export class MenuService implements OnDestroy {
    * Alternar la expansión de un menú principal.
    * @param menu El menú principal a togglear.
    */
-  public toggleMenu(menu: MenuItem): void {
+  public toggleMenu(menu: SubMenuItem): void {
     this.showSideBar = true;
     menu.expanded = !menu.expanded;
   }

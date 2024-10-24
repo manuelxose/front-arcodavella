@@ -1,13 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { WPPost, WPCategory } from 'src/app/core/models/wp.model';
 import { WpPostsService } from 'src/app/core/services/wp-blog.service';
-
-interface BlogPost {
-  titulo: string;
-  descripcion: string;
-  imagen: string;
-}
 
 @Component({
   selector: 'app-blog-carousel',

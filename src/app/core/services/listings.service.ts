@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ListingI } from '../models/listing.model';
 
 export interface Listing {
   id: number;
@@ -15,7 +16,7 @@ export interface Listing {
   providedIn: 'root',
 })
 export class ListingsService {
-  private apiUrl = `${environment.apiUrl}/listings`; // Cambia esto según tu API
+  private apiUrl = `${environment.apiUrl}/contact`; // Cambia esto según tu API
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +24,7 @@ export class ListingsService {
    * Obtener todos los listados desde el servidor.
    */
   getAllListings(): Observable<Listing[]> {
-    return this.http.get<Listing[]>(`${this.apiUrl}/all`, { withCredentials: true });
+    return this.http.get<Listing[]>(`${this.apiUrl}/contact/all`, { withCredentials: true });
   }
 
   /**
@@ -45,5 +46,9 @@ export class ListingsService {
    */
   updateListing(id: number, listing: Listing): Observable<Listing> {
     return this.http.put<Listing>(`${this.apiUrl}/update/${id}`, listing, { withCredentials: true });
+  }
+
+  getListings(): Observable<{ contacts: ListingI[] }> {
+    return this.http.get<{ contacts: ListingI[] }>(`${this.apiUrl}/all`, { withCredentials: true });
   }
 }

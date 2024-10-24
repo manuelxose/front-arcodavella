@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 interface Promocion {
   titulo: string;
   descripcion: string;
@@ -32,7 +33,7 @@ export class PromocionesComponent {
   ];
   posiblesPromociones: Promocion[] = [];
 
-  constructor() {}
+  constructor(readonly router: Router) {}
 
   ngOnInit(): void {}
 }

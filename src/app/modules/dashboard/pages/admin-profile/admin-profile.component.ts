@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileCardComponent } from '../../components/profile/profile-card/profile-card.component';
 import { ProfileLogUsersComponent } from '../../components/profile/profile-log-users/profile-log-users.component';
@@ -41,9 +41,9 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
   // Data variables for the template
   notifications: NotificationI[] = [];
   adminActions: NotificationI[] = [];
-  newUserApprovals: NotificationI[] = [];
-  dataChangeRequests: NotificationI[] = [];
+  dataChangeRequests: any[] = [];
   userLogins: Log[] = [];
+  newUserApprovals: User[] = [];
 
   private subscriptions: Subscription[] = [];
 
@@ -51,7 +51,6 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
     private readonly authSvc: AuthService,
     private readonly logSvc: DatabaseLogsService,
     private notificationSvc: NotificationService,
-    private cdr: ChangeDetectorRef, // Inject ChangeDetectorRef
   ) {
     const user = this.authSvc.userValue;
     if (user) {
@@ -65,24 +64,16 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
     const notificationSub = this.notificationSvc.notifications$.subscribe((notifications) => {
       this.notifications = notifications;
       console.debug('Notifications loaded:', notifications);
-
       // Manually update the adminActions and dataChangeRequests based on notifications
       this.adminActions = this.filterNotifications(RecipientTypes.ADMIN, StatusCodes.APPROVED, notifications);
       this.dataChangeRequests = this.filterNotifications(RecipientTypes.ADMIN, StatusCodes.PENDING, notifications);
-      this.newUserApprovals = this.filterNotifications(RecipientTypes.ADMIN, StatusCodes.APPROVED, notifications);
-
-      console.log('adminActions', this.adminActions);
-      console.log('dataChangeRequests', this.dataChangeRequests);
-
-      // Trigger change detection manually
-      this.cdr.detectChanges();
     });
 
     // Subscribe to log service
     const logSubscription = this.logSvc.getLogs().subscribe({
-      next: (logs) => {
+      next: (logs: Log[]) => {
+        console.log('data:', logs);
         this.userLogins = logs;
-        this.cdr.detectChanges(); // Trigger change detection manually after receiving logs
       },
       error: (error) => console.error('Error al obtener los logs:', error),
     });
@@ -109,6 +100,7 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
   ): NotificationI[] {
     return notifications.filter((notif) => {
       const matches = notif.recipientType === recipientType && notif.status === status;
+      console.debug('Notification matches filter:', notif, 'Matches:', matches);
       return matches;
     });
   }
@@ -119,7 +111,6 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
    */
   setActiveTab(tabName: string): void {
     this.activeTab = tabName;
-    this.cdr.markForCheck(); // Ensure that change detection is triggered when switching tabs
   }
 
   /**

@@ -289,14 +289,14 @@
               [href]="documento.url"
               target="_blank"
               class="text-blue-600 hover:underline"
-              aria-label="Ver {{ documento.name }}">
+              [attr.aria-label]="'Ver' + documento.name">
               <fa-icon [icon]="faEye"></fa-icon>
             </a>
             <!-- Botón para Eliminar el Documento -->
             <button
               class="text-red-600 hover:underline"
               (click)="onDeleteDocument(documento.name)"
-              aria-label="Eliminar {{ documento.name }}">
+              [attr.aria-label]="'Eliminar ' + documento.name">
               <fa-icon [icon]="faTrash"></fa-icon>
             </button>
           </div>

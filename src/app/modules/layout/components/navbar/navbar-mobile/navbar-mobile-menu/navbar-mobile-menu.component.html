@@ -6,7 +6,7 @@
   </div>
   <ul class="flex flex-col space-y-1">
     <!-- List items -->
-    <li *ngFor="let item of menu.items">
+    <li *ngFor="let item of menu.children">
       <!-- Menu List -->
       <div (click)="toggleMenu(item)" class="group relative text-muted-foreground hover:text-foreground">
         <!-- Icon -->
@@ -49,7 +49,7 @@
         <button
           *ngIf="item.children"
           [ngClass]="{ hidden: !menuService.showSideBar, 'rotate-90': item.expanded }"
-          class="pointer-events-none absolute top-1 right-0 flex items-center p-1 text-muted-foreground/50 transition-all duration-500">
+          class="pointer-events-none absolute right-0 top-1 flex items-center p-1 text-muted-foreground/50 transition-all duration-500">
           <svg-icon src="assets/icons/heroicons/solid/chevron-right.svg" [svgClass]="'h-5 w-5'"> </svg-icon>
         </button>
       </div>

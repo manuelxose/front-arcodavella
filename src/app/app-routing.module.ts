@@ -20,6 +20,18 @@ const routes: Routes = [
     path: 'cooperativa',
     loadChildren: () => import('./modules/asamblea/asamblea.module').then((m) => m.AsambleaModule),
   },
+  {
+    path: 'documents',
+    loadChildren: () => import('./modules/documentation/documentation.module').then((m) => m.DocumentationModule),
+  },
+  {
+    path: 'uikit',
+    loadChildren: () => import('./modules/uikit/uikit.module').then((m) => m.UikitModule),
+  },
+  {
+    path: 'general',
+    loadChildren: () => import('./modules/general/general.module').then((m) => m.GeneralModule),
+  },
   { path: '**', redirectTo: 'errors/404' },
 ];
 

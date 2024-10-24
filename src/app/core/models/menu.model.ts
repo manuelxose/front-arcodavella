@@ -5,7 +5,11 @@ import { Roles } from '../enums/roles.enums';
 export interface MenuItem {
   group: string;
   separator?: boolean;
-  children: SubMenuItem[]; // Changed from 'items' to 'children'
+  children: SubMenuItem[];
+  expanded?: boolean;
+  active?: boolean;
+  selected?: boolean;
+  roles?: Roles[];
 }
 
 export interface SubMenuItem {
@@ -15,5 +19,6 @@ export interface SubMenuItem {
   roles?: Roles[];
   expanded?: boolean;
   active?: boolean;
-  children?: SubMenuItem[]; // Support for nested submenus
+  children?: SubMenuItem[]; // Soporte para submenús anidados
+  group?: string;
 }

@@ -1,3 +1,7 @@
+export interface MonthsOfYear {
+  [key: string]: string;
+}
+
 export class UtilsService {
   // Método para formatear fechas al formato "Miércoles, 23 Enero 2023"
   static formatDateToReadableString(dateString: string): string {
@@ -56,7 +60,7 @@ export class UtilsService {
       Octubre: '10',
       Noviembre: '11',
       Diciembre: '12',
-    } as any;
+    } as MonthsOfYear;
 
     // Verificar si el mes es válido
     if (!monthsOfYear[month]) {

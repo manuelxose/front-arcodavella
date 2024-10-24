@@ -6,12 +6,12 @@
         class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg"
         src="https://ui-avatars.com/api/?name={{ user.name }}"
         alt="Foto de {{ user.name }}" />
-      <button
+      <!-- <button
         class="absolute bottom-0 right-0 rounded-full bg-blue-600 p-2 text-white shadow-md transition hover:bg-blue-700"
         (click)="changeProfilePicture()"
         aria-label="Cambiar foto de perfil">
         <fa-icon [icon]="['fas', 'camera']"></fa-icon>
-      </button>
+      </button> -->
     </div>
   </div>
 
@@ -64,8 +64,8 @@
       <div class="ml-4">
         <span class="block font-medium text-gray-700">Número de Cuenta</span>
         <span class="block text-gray-600">
-          <span *ngIf="showAccountNumber; else maskedAccount">{{ user.numeroCuenta }}</span>
-          <ng-template #maskedAccount>{{ maskAccountNumber(user.numeroCuenta) }}</ng-template>
+          <span *ngIf="showAccountNumber; else maskedAccount">{{ user.accountNumber }}</span>
+          <ng-template #maskedAccount>{{ maskAccountNumber(user.accountNumber) }}</ng-template>
         </span>
         <button
           class="mt-1 text-sm text-blue-600 focus:outline-none hover:underline"

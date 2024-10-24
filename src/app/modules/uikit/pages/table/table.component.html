@@ -41,7 +41,7 @@
     <table
       class="table w-full table-auto border-collapse border-0 text-left align-middle leading-5 text-muted-foreground">
       <thead class="border border-muted/20 text-xs text-muted-foreground">
-        <tr app-table-header (onCheck)="toggleUsers($event)"></tr>
+        <tr app-table-header></tr>
       </thead>
       <tbody>
         @for (user of users(); track $index) {
