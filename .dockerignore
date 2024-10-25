@@ -1,0 +1,22 @@
+# Ignorar node_modules y dependencias
+node_modules
+dist
+
+# Ignorar archivos de configuración de Git
+.git
+.gitignore
+
+# Ignorar archivos de Docker
+Dockerfile
+docker-compose.yml
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar IDE y editor de archivos
+.vscode
+.idea
+
+# Ignorar otros archivos no necesarios
+README.md
+LICENSE
