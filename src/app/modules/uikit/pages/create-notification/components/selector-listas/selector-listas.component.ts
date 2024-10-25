@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { ListingsService } from 'src/app/core/services/listings.service';
 
 interface Lista {
   nombre: string;
@@ -50,6 +51,7 @@ export class SelectorListasComponent implements ControlValueAccessor {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private readonly notSvc: NotificationService,
+    private readonly listSvc: ListingsService,
   ) {
     this.loadLists();
   }
@@ -64,6 +66,14 @@ export class SelectorListasComponent implements ControlValueAccessor {
       });
 
       console.log('Loaded lists:', res);
+    });
+    this.listSvc.getAllListings().subscribe((res) => {
+      console.log('Loaded listings:', res);
+      this.listas.push({
+        nombre: 'Listas de Contacto',
+        destinatarios: res.contacts.length,
+        miembros: res.contacts,
+      });
     });
   }
 

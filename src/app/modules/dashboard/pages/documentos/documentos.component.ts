@@ -16,7 +16,7 @@ import { DocumentosService } from 'src/app/core/services/documentos.service';
 export class DocumentosComponent implements OnInit {
   mediaItems: WPMedia[] = [];
   searchTerm: string = '';
-  selectedMediaType: 'all' | 'image' | 'application/pdf' = 'all';
+  selectedMimeType: 'all' | 'image' | 'application/pdf' = 'all';
   sortByDate: 'latest' | 'oldest' = 'latest';
 
   isLoading: boolean = false;
@@ -31,9 +31,11 @@ export class DocumentosComponent implements OnInit {
   /** Obtener medios desde el servicio */
   fetchMedia(): void {
     this.isLoading = true;
-    this.documentosService.getMedia(this.selectedMediaType).subscribe({
+    this.documentosService.getMedia(this.selectedMimeType).subscribe({
       next: (media: WPMedia[]) => {
         this.mediaItems = media;
+        console.log('selectedMediaType', this.selectedMimeType);
+        console.log('mediaItems', this.mediaItems);
         this.isLoading = false;
         media.forEach((element) => {
           if (element.media_type === 'file') console.log(element);
@@ -60,6 +62,10 @@ export class DocumentosComponent implements OnInit {
     // Filtrar por búsqueda de texto
     if (this.searchTerm) {
       filtered = filtered.filter((media) => media.title.rendered.toLowerCase().includes(this.searchTerm.toLowerCase()));
+    }
+    //Filtrar por tipo de medio
+    if (this.selectedMimeType !== 'all') {
+      filtered = filtered.filter((media) => media.mime_type === this.selectedMimeType);
     }
 
     // Ordenar por fecha

@@ -23,8 +23,8 @@ export class ListingsService {
   /**
    * Obtener todos los listados desde el servidor.
    */
-  getAllListings(): Observable<Listing[]> {
-    return this.http.get<Listing[]>(`${this.apiUrl}/contact/all`, { withCredentials: true });
+  getAllListings(): Observable<{ contacts: Listing[] }> {
+    return this.http.get<{ contacts: Listing[] }>(`${this.apiUrl}/all`, { withCredentials: true });
   }
 
   /**

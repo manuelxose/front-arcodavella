@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgStyle, CurrencyPipe, CommonModule } from '@angular/common';
 import { DocumentosService } from 'src/app/core/services/documentos.service';
 import { WPMedia } from 'src/app/core/models/wp.model';
+import { Router } from '@angular/router';
 interface Document {
   nombre: string;
   descripcion: string;
@@ -38,8 +39,11 @@ export class OverviewDocumentsComponent implements OnInit {
   selectedMediaType: 'all' | 'image' | 'application/pdf' = 'application/pdf';
   mediaItems: WPMedia[] = [];
   errorMessage: string = '';
+  router: Router;
 
-  constructor(private readonly documentosService: DocumentosService) {}
+  constructor(private readonly documentosService: DocumentosService, private _router: Router) {
+    this.router = _router;
+  }
 
   ngOnInit(): void {
     this.fetchMedia();
@@ -71,5 +75,11 @@ export class OverviewDocumentsComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  // Método para abrir el documento en una nueva pestaña
+  openDocument(doc: WPMedia): void {
+    const url = doc.source_url; // Asume que 'source_url' es la URL del documento
+    window.open(url, '_blank');
   }
 }

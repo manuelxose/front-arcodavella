@@ -1,9 +1,7 @@
-// src/app/services/documentos.service.ts
-
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError, of, forkJoin } from 'rxjs';
+import { catchError, tap, map, mergeMap } from 'rxjs/operators';
 import { WPMedia } from '../models/wp.model';
 
 export interface Documento {
@@ -23,11 +21,41 @@ export class DocumentosService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Obtener medios desde la API de WordPress con caché en memoria.
+   * Obtener medios desde la API de WordPress con caché en memoria y manejar paginación.
    */
   getMedia(tipo: string): Observable<WPMedia[]> {
-    // Implementa la lógica para obtener documentos generales
-    return this.http.get<WPMedia[]>(`${this.apiUrl}?tipo=${tipo}`);
+    const params = new HttpParams().set('mime_type', tipo).set('per_page', '100'); // Límite alto para obtener más resultados por página
+
+    // Hacer la primera solicitud para obtener los resultados iniciales y los headers de paginación
+    return this.http.get<WPMedia[]>(this.apiUrl, { params, observe: 'response' }).pipe(
+      mergeMap((response) => {
+        const totalPages = Number(response.headers.get('X-WP-TotalPages')) || 1; // Obtener el número total de páginas
+        const initialMedia = response.body || [];
+
+        if (totalPages === 1) {
+          // Si solo hay una página, devolver los resultados
+          return of(initialMedia);
+        } else {
+          // Si hay más de una página, hacer solicitudes adicionales para las otras páginas
+          const pageRequests: Observable<WPMedia[]>[] = [];
+
+          for (let page = 2; page <= totalPages; page++) {
+            const paginatedParams = params.set('page', page.toString());
+            pageRequests.push(this.http.get<WPMedia[]>(this.apiUrl, { params: paginatedParams }));
+          }
+
+          // Usar forkJoin para hacer todas las solicitudes de las páginas restantes
+          return forkJoin(pageRequests).pipe(
+            map((responses) => {
+              // Combinar los resultados de todas las páginas en un solo array
+              const allMedia = responses.reduce((acc, mediaPage) => acc.concat(mediaPage), initialMedia);
+              return allMedia;
+            }),
+          );
+        }
+      }),
+      catchError(this.handleError),
+    );
   }
 
   /**
@@ -56,7 +84,8 @@ export class DocumentosService {
 
   getDocumentosSocio(socioId: number): Observable<WPMedia[]> {
     // Implementa la lógica para obtener documentos de un socio específico
-    return this.http.get<WPMedia[]>(`${this.apiUrl}?socioId=${socioId}`);
+    const params = new HttpParams().set('socioId', socioId.toString());
+    return this.http.get<WPMedia[]>(this.apiUrl, { params });
   }
 
   /**

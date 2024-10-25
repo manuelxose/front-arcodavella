@@ -73,12 +73,12 @@ export class ProfileMenuComponent implements OnInit {
         {
           label: 'Mi Perfil',
           icon: 'assets/icons/heroicons/outline/user-circle.svg',
-          route: role === Roles.ADMIN ? '/profile/admin' : '/profile/user',
+          route: role === Roles.ADMIN ? '/dashboard/profile' : '/dashboard/member-profile',
         },
         {
-          label: 'Configuración',
+          label: 'Pau de Navia',
           icon: 'assets/icons/heroicons/outline/cog-6-tooth.svg',
-          route: '/settings',
+          route: '/dashboard/notificaciones',
         },
       ],
     };
@@ -95,7 +95,7 @@ export class ProfileMenuComponent implements OnInit {
         {
           label: 'Gestión de Usuarios',
           icon: 'assets/icons/heroicons/outline/users.svg',
-          route: '/admin/users',
+          route: '/uikit/lista-socios',
         },
       ],
     };
@@ -107,12 +107,12 @@ export class ProfileMenuComponent implements OnInit {
         {
           label: 'Mis Notificaciones',
           icon: 'assets/icons/heroicons/outline/bell.svg',
-          route: '/notifications',
+          route: '/dashboard/notificaciones',
         },
         {
           label: 'Soporte',
           icon: 'assets/icons/heroicons/outline/information-circle.svg',
-          route: '/support',
+          route: '/general/contact',
         },
       ],
     };

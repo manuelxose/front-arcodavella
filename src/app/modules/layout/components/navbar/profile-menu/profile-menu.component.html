@@ -47,7 +47,6 @@
           <ng-container *ngFor="let item of group.items">
             <a
               (click)="onMenuItemClick(item)"
-              href="#"
               class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <img [src]="item.icon" class="mr-3 h-5 w-5 text-gray-400" alt="{{ item.label }}" />
               {{ item.label }}
@@ -60,7 +59,6 @@
           <ng-container *ngFor="let item of group.items">
             <a
               (click)="onMenuItemClick(item)"
-              href="#"
               class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <img [src]="item.icon" class="mr-3 h-5 w-5 text-gray-400" alt="{{ item.label }}" />
               {{ item.label }}

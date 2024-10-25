@@ -6,7 +6,10 @@
   </div>
   <!-- Lista de Documentos -->
   <ul class="space-y-4 p-6">
-    <li *ngFor="let doc of mediaItems" class="flex items-start rounded-lg p-4 transition hover:bg-gray-50">
+    <li
+      *ngFor="let doc of mediaItems"
+      class="flex cursor-pointer items-start rounded-lg p-4 transition hover:bg-gray-50"
+      (click)="openDocument(doc)">
       <!-- Icono del Documento -->
       <div class="flex-shrink-0 rounded-lg bg-yellow-100 p-2 shadow-inner">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
@@ -22,6 +25,7 @@
   <!-- Botón para Ver Más Documentos -->
   <div class="flex justify-center p-6">
     <button
+      (click)="router.navigate(['/dashboard/documentos'])"
       class="rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md transition-transform hover:scale-105 hover:bg-blue-700">
       Ver Más Documentos
     </button>

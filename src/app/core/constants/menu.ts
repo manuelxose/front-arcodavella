@@ -114,8 +114,8 @@ export class Menu {
         },
         {
           icon: 'assets/icons/heroicons/outline/flag.svg',
-          label: 'Reportes',
-          route: '/admin/reportes',
+          label: 'Crear Notificaciones',
+          route: '/uikit/enviar-notificaciones',
           roles: [Roles.ADMIN],
         },
         {
