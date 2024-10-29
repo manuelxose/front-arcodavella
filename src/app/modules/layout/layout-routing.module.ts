@@ -24,11 +24,11 @@ const routes: Routes = [
     component: LayoutComponent,
     loadChildren: () => import('../uikit/uikit.module').then((m) => m.UikitModule),
   },
-  {
-    path: 'documents',
-    component: LayoutComponent,
-    loadChildren: () => import('../documentation/documentation.module').then((m) => m.DocumentationModule),
-  },
+  // {
+  //   path: 'documents',
+  //   component: LayoutComponent,
+  //   loadChildren: () => import('../documentation/documentation.module').then((m) => m.DocumentationModule),
+  // },
   {
     path: 'general',
     component: LayoutComponent,

@@ -30,7 +30,7 @@
       <fa-icon [icon]="['fas', 'envelope']" class="h-6 w-6 flex-shrink-0 text-blue-600"></fa-icon>
       <div class="ml-4">
         <span class="block font-medium text-gray-700">Email</span>
-        <span class="block text-gray-600">{{ user.email }}</span>
+        <span class="block max-w-[14rem] truncate text-gray-600 md:max-w-full">{{ user.email }}</span>
       </div>
     </div>
 
@@ -41,7 +41,7 @@
       <fa-icon [icon]="['fas', 'phone']" class="h-6 w-6 flex-shrink-0 text-green-600"></fa-icon>
       <div class="ml-4">
         <span class="block font-medium text-gray-700">Teléfono</span>
-        <span class="block text-gray-600">{{ user.phone }}</span>
+        <span class="block text-gray-600">{{ user.phone }} </span>
       </div>
     </div>
 

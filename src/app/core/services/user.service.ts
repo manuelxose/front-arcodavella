@@ -12,12 +12,14 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getUserProfile(user: User): Observable<{ profile: User }> {
-    return this.http.get<{ profile: User }>(`${this.apiUrl}/profile/${user.id}`, { withCredentials: true });
+  getUserProfile(user: User): Observable<User> {
+    console.log('Usuario que se busca: ', user);
+
+    return this.http.get<User>(`${this.apiUrl}/auth/${user.id}`, { withCredentials: true });
   }
 
   updateUserProfile(user: User): Observable<{ profile: User }> {
-    return this.http.put<{ profile: User }>(`${this.apiUrl}/profile/${user.id}`, { user }, { withCredentials: true });
+    return this.http.put<{ profile: User }>(`${this.apiUrl}/auth/${user.id}`, { user }, { withCredentials: true });
   }
 
   // Buscar el perfil del usuario por su email

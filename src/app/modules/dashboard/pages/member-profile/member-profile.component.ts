@@ -180,6 +180,7 @@ export class MemberProfileComponent implements OnInit, OnDestroy {
         // dni: this.memberForm.get('dni')?.value, // Incluye si 'dni' es editable
         status: this.user.status, // Incluye si es necesario
         role: this.user.role, // Incluye si es necesario
+        updatedAt: this.user.updatedAt, // Incluye si es necesario
       };
 
       // Enviar los datos actualizados al servidor

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { TermsConditionsComponent } from './pages/terms-conditions/terms-conditions.component';
 import { DocumentationComponent } from './documentation.component';
@@ -12,12 +11,7 @@ const routes: Routes = [
     component: DocumentationComponent,
     children: [
       {
-        path: '',
-        redirectTo: 'terms-conditions',
-        pathMatch: 'full',
-      },
-      {
-        path: 'terms-conditions',
+        path: 'terminos',
         component: TermsConditionsComponent,
       },
       {
@@ -34,7 +28,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
 export class DocumentationRoutingModule {}

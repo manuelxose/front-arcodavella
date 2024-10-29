@@ -3,7 +3,7 @@
     <h2 class="mb-1 text-3xl font-semibold text-foreground">Regístrate <span class="text-primary">!</span></h2>
     <p class="text-sm text-muted-foreground">Comienza tu viaje con nosotros como socio de Arco da Vella.</p>
   </div>
-
+  <!--
   <div routerLink="/dashboard">
     <app-button full impact="bold" tone="light" shape="rounded" size="medium">
       <svg-icon src="assets/icons/google-logo.svg" [svgClass]="'h-6 w-6 mr-2'"></svg-icon>
@@ -14,7 +14,7 @@
   <div
     class="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-muted after:mt-0.5 after:flex-1 after:border-t after:border-muted">
     <p class="mx-4 mb-0 text-center text-sm text-muted-foreground">o</p>
-  </div>
+  </div> -->
 
   <div class="space-y-3 text-left">
     <div class="relative" [ngClass]="{ 'has-error': submitted && f['email'].errors }">
@@ -125,12 +125,7 @@
     <div class="flex items-center gap-1">
       <input id="accept-term" name="accept-term" type="checkbox" formControlName="acceptTerms" />
       <label for="accept-term" class="ml-2 block text-sm text-muted-foreground"> Acepto los </label>
-      <app-button
-        (buttonClick)="navigateTo('documents/terms-services')"
-        impact="none"
-        tone="primary"
-        shape="rounded"
-        size="small">
+      <app-button (click)="navigateTo('/documents/terminos')" impact="none" tone="primary" shape="rounded" size="small">
         Términos
       </app-button>
     </div>

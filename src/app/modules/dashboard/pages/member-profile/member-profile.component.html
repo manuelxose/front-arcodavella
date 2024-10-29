@@ -65,7 +65,7 @@
             <!--  Última actualización -->
             <p class="mt-1 text-center text-xs text-gray-600 sm:text-left sm:text-sm">
               <span class="font-semibold text-gray-400">Última actualización:</span>
-              {{ memberForm.get('updatedAt')?.value | date : 'short' || '' }}
+              {{ user.updatedAt | date : 'short' || '' }}
             </p>
           </div>
         </div>

@@ -292,25 +292,65 @@ export class PdfService {
   }
 
   /**
-   * Genera un PDF a partir de un elemento HTML.
+   * Genera un PDF formal a partir de un elemento HTML, centrando una tarjeta en la página y añadiendo elementos adicionales como encabezados y pies de página.
    * @param element El elemento HTML que se quiere convertir a PDF.
    * @param fileName Nombre del archivo PDF resultante.
    */
   generatePdfFromHtml(element: HTMLElement, fileName: string): void {
-    html2canvas(element, {
-      useCORS: true, // Si usas imágenes desde URLs externas
-    }).then((canvas) => {
+    const options = {
+      scale: 3, // Aumenta la escala para mejorar la resolución
+      useCORS: true,
+      logging: false,
+      scrollY: -window.scrollY,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+    };
+
+    html2canvas(element, options).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      // Añadir encabezado
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Arco da Vella Sociedade Cooperativa Galega', pdfWidth / 2, 20, { align: 'center' });
+
+      // Añadir fecha
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      const today = new Date();
+      const dateStr = today.toLocaleDateString();
+      pdf.text(`Fecha: ${dateStr}`, pdfWidth - 20, 30, { align: 'right' });
+
+      // Convertir las dimensiones del canvas a mm
+      const imgWidth = (canvas.width * 25.4) / 96; // 96 DPI
+      const imgHeight = (canvas.height * 25.4) / 96;
+
+      // Calcular el escalado para ajustar la imagen dentro de la página con márgenes
+      const maxWidth = pdfWidth * 0.8; // Dejar 10% de margen a cada lado
+      const maxHeight = pdfHeight * 0.6; // Dejar espacio para encabezado y pie de página
+
+      let width = imgWidth;
+      let height = imgHeight;
+
+      const ratio = Math.min(maxWidth / width, maxHeight / height);
+      width = width * ratio;
+      height = height * ratio;
+
+      // Centrar la imagen en la página PDF
+      const x = (pdfWidth - width) / 2;
+      const y = (pdfHeight - height) / 2 + 10; // Ajustar posición vertical
+
+      pdf.addImage(imgData, 'PNG', x, y, width, height);
+
+      // Añadir pie de página
+      pdf.setFontSize(10);
+      pdf.text('Documento generado para control de asistencia a asambleas', pdfWidth / 2, pdfHeight - 20, {
+        align: 'center',
       });
 
-      const imgWidth = 210; // Ancho de una página A4 en mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save(`${fileName}.pdf`);
     });
   }

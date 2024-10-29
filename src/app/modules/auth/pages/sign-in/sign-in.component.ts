@@ -18,6 +18,7 @@ export class SignInComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
   passwordTextType = false;
+  isDisabled: boolean = true;
 
   constructor(
     private readonly _formBuilder: FormBuilder,
@@ -57,9 +58,15 @@ export class SignInComponent implements OnInit {
     // Autenticación
     this.authService.login(email, password).subscribe({
       next: (user) => {
-        toast.success('Login successful!'); // Notificación de éxito
-        console.log('Login successful, navigating to home');
-        this._router.navigate(['/dashboard/overview']); // Redirige a la ruta protegida después del login
+        if (user.status === 'active') {
+          toast.success('Login successful!'); // Notificación de éxito
+          console.log('Login successful, navigating to dashboard');
+          this._router.navigate(['/dashboard/overview']); // Redirige a la ruta protegida si el usuario está activo
+        } else {
+          toast.error('Your account is inactive.'); // Notificación de cuenta inactiva
+          console.log('User is inactive, navigating to auth/inactive');
+          this._router.navigate(['/auth/inactive']); // Redirige a la ruta de usuario inactivo
+        }
       },
       error: (error) => {
         toast.error(error?.message || 'Login failed.'); // Notificación de error en caso de fallo

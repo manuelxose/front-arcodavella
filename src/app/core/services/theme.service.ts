@@ -1,3 +1,4 @@
+// src/app/core/services/theme.service.ts
 import { Injectable, signal } from '@angular/core';
 import { Theme } from '../models/theme.model';
 import { effect } from '@angular/core';
@@ -6,7 +7,7 @@ import { effect } from '@angular/core';
   providedIn: 'root',
 })
 export class ThemeService {
-  public theme = signal<Theme>({ mode: 'dark', color: 'base' });
+  public theme = signal<Theme>({ mode: 'light', color: 'red' }); // Cambiado a 'light' y 'red'
 
   constructor() {
     this.loadTheme();
@@ -28,11 +29,14 @@ export class ThemeService {
   }
 
   public get isDark(): boolean {
-    return this.theme().mode == 'dark';
+    return this.theme().mode === 'dark';
   }
 
   private setThemeClass() {
-    document.querySelector('html')!.className = this.theme().mode;
-    document.querySelector('html')!.setAttribute('data-theme', this.theme().color);
+    const htmlElement = document.querySelector('html');
+    if (htmlElement) {
+      htmlElement.className = this.theme().mode;
+      htmlElement.setAttribute('data-theme', this.theme().color);
+    }
   }
 }

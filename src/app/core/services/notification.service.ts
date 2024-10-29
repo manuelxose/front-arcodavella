@@ -5,9 +5,12 @@ import { NotificationI } from 'src/app/core/models/notification.model';
 import { environment } from 'src/environments/environment';
 import { StatusCodes } from 'src/app/core/enums/status.enum';
 import { NotificationTypes } from '../enums/notification.enums';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { SendBulkEmailDTO, SendEmailDTO } from '../models/email.model';
 import pako from 'pako';
+import { User } from '../models/user.model';
+import { UserService } from './user.service';
+import { TemplateService } from './template.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +22,11 @@ export class NotificationService {
   private notificationsSubject = new BehaviorSubject<NotificationI[]>([]);
   notifications$: Observable<NotificationI[]> = this.notificationsSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly userService: UserService,
+    private readonly templateService: TemplateService,
+  ) {}
 
   // Cargar notificaciones desde el servidor
   loadNotifications(): void {
@@ -60,24 +67,31 @@ export class NotificationService {
     return status === 'all' ? notifications : notifications.filter((notification) => notification.status === status);
   }
 
-  // Aceptar una solicitud basada en el tipo de notificación
-  acceptRequest(notificationId: string): Observable<any> {
+  /**
+   * Aceptar una solicitud basada en el tipo de notificación.
+   * @param notificationId ID de la notificación.
+   */
+  acceptRequest(notificationId: string): void {
     const notification = this.getNotificationById(notificationId);
-    if (!notification) return throwError(() => new Error('Notificación no encontrada'));
+    if (!notification) {
+      console.warn(`Notification with ID ${notificationId} not found`);
+      return;
+    }
 
     switch (notification.type) {
       case NotificationTypes.USER_REQUEST:
-        return this.handleUserRequest(notificationId, notification.recipientId);
+        this.handleUserRequest(notificationId, notification.recipientId);
+        break;
       case NotificationTypes.UPDATE_PROFILE:
-        return this.handleProfileUpdate(
+        this.handleProfileUpdate(
           notificationId,
           notification.recipientId,
           notification.fieldToUpdate,
           notification.newValue,
         );
+        break;
       default:
-        console.warn('Unknown notification type');
-        return throwError(() => new Error('Tipo de notificación desconocido'));
+        console.warn('Unknown notification type:', notification.type);
     }
   }
 
@@ -105,11 +119,17 @@ export class NotificationService {
   }
 
   // Manejar la aceptación de una solicitud de usuario
-  private handleUserRequest(notificationId: string, recipientId: string): Observable<any> {
-    return this.updateUserStatus(recipientId, StatusCodes.ACTIVE).pipe(
-      catchError(this.handleError('handleUserRequest')),
-      // En el pipe, puedes agregar más operadores si es necesario
-    );
+  private handleUserRequest(notificationId: string, recipientId: string): void {
+    this.updateUserStatus(recipientId, StatusCodes.ACTIVE).subscribe({
+      next: () => {
+        // Only if the user status update succeeds, we update the notification
+        this.updateNotificationStatus(notificationId, StatusCodes.APPROVED);
+      },
+      error: (error) => {
+        // Log the error and do not update the notification status
+        console.error('Error updating user status:', error);
+      },
+    });
   }
 
   // Manejar la aceptación de una actualización de perfil
@@ -134,11 +154,22 @@ export class NotificationService {
     return this.getNotifications().find((notif) => notif.id === notificationId);
   }
 
-  // Actualizar el estado del usuario
+  /**
+   * Actualizar el estado de un usuario.
+   * @param recipientId ID del usuario.
+   * @param status Nuevo estado del usuario.
+   * @returns Observable de la respuesta.
+   */
   private updateUserStatus(recipientId: string, status: StatusCodes): Observable<any> {
-    return this.http
-      .put(`${this.apiUrl}/auth/${recipientId}`, { status }, { withCredentials: true })
-      .pipe(catchError(this.handleError('updateUserStatus')));
+    console.log('updateUserStatus');
+    return this.http.put(`${this.apiUrl}/auth/${recipientId}`, { status }, { withCredentials: true }).pipe(
+      tap(() => {
+        if (status === StatusCodes.ACTIVE) {
+          this.sendWelcomeEmail(recipientId); // Enviar el correo de bienvenida
+        }
+      }),
+      catchError(this.handleError('updateUserStatus')),
+    );
   }
 
   // Actualizar el perfil del usuario
@@ -175,7 +206,7 @@ export class NotificationService {
     });
 
     return this.http
-      .post(`${this.apiUrl}/notifications/send`, data, { headers })
+      .post(`${this.apiUrl}/email/send`, data, { headers, withCredentials: true })
       .pipe(catchError(this.handleError('enviarNotificacion')));
   }
 
@@ -203,6 +234,41 @@ export class NotificationService {
       })
       .pipe(catchError(this.handleError('enviarNotificacionMasiva')));
   }
+
+  /**
+   * Enviar un correo de bienvenida a un usuario recién activado.
+   * @param recipientId ID del usuario al que se le enviará el correo.
+   */
+  private sendWelcomeEmail(recipientId: string): void {
+    // Inicializamos un nuevo objeto Member
+    const user: User = {} as User;
+
+    user.id = recipientId;
+
+    // Llamamos al servicio con el objeto Member
+    this.userService.getUserProfile(user).subscribe({
+      next: (response: User) => {
+        const email = response.email; // Obtener el correo desde el perfil
+
+        const emailData: SendEmailDTO = {
+          to: email,
+          subject: 'Bienvenido a nuestra plataforma',
+          bodyText: this.templateService.getWelcomeTemplate(), // Usa la plantilla de bienvenida
+          bodyHtml: this.templateService.getWelcomeTemplate(), // Usa la plantilla de bienvenida
+        };
+
+        // Enviar el correo de bienvenida
+        this.enviarNotificacion(emailData).subscribe({
+          next: () => console.log('Correo de bienvenida enviado a:', email),
+          error: (err) => console.error('Error al enviar correo de bienvenida:', err),
+        });
+      },
+      error: (err) => {
+        console.error('Error al obtener el correo del usuario:', err);
+      },
+    });
+  }
+
   // --- Fin de Métodos para Envío de Correos Electrónicos ---
 
   // Método privado para manejar errores de HttpClient

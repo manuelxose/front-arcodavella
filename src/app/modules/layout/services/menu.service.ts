@@ -1,6 +1,6 @@
 // src/app/core/services/menu.service.ts
 
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';

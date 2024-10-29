@@ -31,7 +31,9 @@
           alt="Avatar de Usuario" />
         <div class="ml-3">
           <p class="text-sm font-medium text-gray-900">{{ user?.name || 'Nombre del Usuario' }}</p>
-          <p class="truncate text-xs font-medium text-gray-500">{{ user?.email || 'email@ejemplo.com' }}</p>
+          <p class="max-w-[12rem] truncate text-xs font-medium text-gray-500">
+            {{ user?.email || 'email@ejemplo.com' }}
+          </p>
         </div>
       </div>
     </div>

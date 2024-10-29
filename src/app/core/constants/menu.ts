@@ -204,6 +204,33 @@ export class Menu {
         },
       ],
     },
+
+    {
+      group: 'Legal',
+      separator: true,
+      roles: [Roles.ADMIN],
+      children: [
+        {
+          icon: 'assets/icons/heroicons/outline/lock-closed.svg',
+          label: 'Términos y Condiciones',
+          route: '/documents/terminos',
+          roles: [Roles.ADMIN],
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/lock-closed.svg',
+          label: 'Política de Cookies',
+          route: '/documents/politica-cookies',
+          roles: [Roles.ADMIN],
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/lock-closed.svg',
+          label: 'Política de Privacidad',
+          route: '/documents/politica-privacidad',
+          roles: [Roles.ADMIN],
+        },
+      ],
+    },
+
     // Grupos para Usuarios
     {
       group: 'Perfil',

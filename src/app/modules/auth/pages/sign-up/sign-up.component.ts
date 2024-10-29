@@ -69,7 +69,7 @@ export class SignUpComponent implements OnInit {
     this.authService.register(email, password).subscribe({
       next: (user: User) => {
         toast.success('Registration successful!'); // Mensaje de éxito
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/auth/inactive']);
       },
       error: (err: Error) => {
         toast.error(err.message || 'Registration failed.'); // Mensaje de error

@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-terms-conditions',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './terms-conditions.component.html',
-  styleUrl: './terms-conditions.component.scss'
+  styleUrl: './terms-conditions.component.scss',
 })
-export class TermsConditionsComponent {
-
-}
+export class TermsConditionsComponent {}

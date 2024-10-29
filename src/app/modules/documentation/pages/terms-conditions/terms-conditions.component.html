@@ -116,9 +116,10 @@
       <h2 class="mb-4 text-2xl font-bold text-gray-800">9. Privacidad y Protección de Datos</h2>
       <p class="mb-4 text-gray-700">
         La recopilación y uso de sus datos personales está regida por nuestra
-        <a href="documentation/politica-privacidad" class="text-blue-600 hover:underline">Política de Privacidad</a>. Al
-        utilizar nuestros Servicios, usted consiente la recopilación, uso y almacenamiento de su información de acuerdo
-        con dicha política.
+        <a [routerLink]="['/documents/politica-privacidad']" class="text-blue-600 hover:underline"
+          >Política de Privacidad</a
+        >. Al utilizar nuestros Servicios, usted consiente la recopilación, uso y almacenamiento de su información de
+        acuerdo con dicha política.
       </p>
     </section>
 
@@ -164,7 +165,7 @@
         Arco da Vella utiliza cookies para mejorar su experiencia de navegación, personalizar contenidos y anuncios,
         proporcionar funciones de redes sociales y analizar nuestro tráfico. Al utilizar nuestros Servicios, usted
         acepta el uso de cookies de acuerdo con nuestra
-        <a href="documentation/politica-cookies" class="text-blue-600 hover:underline">Política de Cookies</a>.
+        <a [routerLink]="['/documents/politica-cookies']" class="text-blue-600 hover:underline">Política de Cookies</a>
       </p>
     </section>
 

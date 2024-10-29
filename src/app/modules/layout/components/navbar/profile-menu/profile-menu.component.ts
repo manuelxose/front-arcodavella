@@ -1,5 +1,4 @@
 // src/app/shared/components/profile-menu/profile-menu.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,6 +7,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Roles } from '../../../../../core/enums/roles.enums';
+import { ThemeService } from 'src/app/core/services/theme.service';
 
 interface ProfileMenuItem {
   label: string;
@@ -54,11 +54,46 @@ export class ProfileMenuComponent implements OnInit {
   public user: any;
   public profileMenu: ProfileMenuGroup[] = [];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  // Elementos del tema
+  public themeColors = [
+    {
+      name: 'base',
+      code: '#e11d48',
+    },
+    {
+      name: 'yellow',
+      code: '#f59e0b',
+    },
+    {
+      name: 'green',
+      code: '#22c55e',
+    },
+    {
+      name: 'blue',
+      code: '#3b82f6',
+    },
+    {
+      name: 'orange',
+      code: '#ea580c',
+    },
+    {
+      name: 'red',
+      code: '#cc0022',
+    },
+    {
+      name: 'violet',
+      code: '#6d28d9',
+    },
+  ];
+
+  public themeMode = ['light', 'dark'];
+
+  constructor(private authService: AuthService, private router: Router, private themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.user = this.authService.userValue;
     this.setProfileMenu();
+    this.setThemeSettings();
   }
 
   /**
@@ -76,7 +111,7 @@ export class ProfileMenuComponent implements OnInit {
           route: role === Roles.ADMIN ? '/dashboard/profile' : '/dashboard/member-profile',
         },
         {
-          label: 'Pau de Navia',
+          label: 'Paula de Navia',
           icon: 'assets/icons/heroicons/outline/cog-6-tooth.svg',
           route: '/dashboard/notificaciones',
         },
@@ -164,5 +199,18 @@ export class ProfileMenuComponent implements OnInit {
       this.router.navigate([item.route]);
     }
     this.isOpen = false; // Cierra el menú después de una acción
+  }
+
+  private setThemeSettings() {
+    this.themeService.theme.update((theme) => {
+      const mode = theme.mode ? theme.mode : 'light';
+      return { ...theme, mode: mode };
+    });
+  }
+
+  toggleThemeColor(color: string) {
+    this.themeService.theme.update((theme) => {
+      return { ...theme, color: color };
+    });
   }
 }

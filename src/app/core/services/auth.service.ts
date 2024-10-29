@@ -104,13 +104,25 @@ export class AuthService {
   }
 
   /**
-   * Verifica si el usuario está autenticado.
-   * @returns Booleano indicando si está autenticado.
+   * Verifica si el usuario está autentificado y activo.
+   * @returns Booleano indicando si está autenticado y activo.
    */
   isAuthenticated(): boolean {
-    const isAuthenticated = !!this.userValue;
-    console.log('Check if user is authenticated:', isAuthenticated);
-    return isAuthenticated;
+    if (!this.userValue) {
+      console.log('User is not authenticated:', this.userValue);
+      return false;
+    }
+
+    const isActive = this.userValue.status === 'active';
+    console.log('Check if user is authenticated and active:', this.userValue, 'Active:', isActive);
+
+    if (isActive) {
+      console.log('User is authenticated and active:', this.userValue);
+    } else {
+      console.log('User is authenticated but inactive:', this.userValue);
+    }
+
+    return isActive;
   }
 
   /**
